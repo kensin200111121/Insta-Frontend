@@ -1,0 +1,11 @@
+import './transaction.mock';
+import './batch.mock';
+import './chargeback.mock';
+import './refund.mock';
+import './supportticket.mock';
+import './home.mock';
+import './setting.mock';
+import './location.mock';
+import './fundingreport.mock';
+import './terminal.mock';
+import './merchantaccount.mock';

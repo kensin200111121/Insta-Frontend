@@ -1,0 +1,11 @@
+export { default as MyButton } from './button';
+export { default as MyCheckBox } from './checkbox';
+export { default as MyDatePicker } from './date-picker';
+export { default as MyInputNumber } from './input-number';
+export { default as MyInput } from './input';
+export { default as MyModal } from './modal';
+export { default as MyRadio } from './radio';
+export { default as MySelect } from './select';
+export { default as MySwitch } from './switch';
+export { default as MyPage } from './page';
+export { default as MyTimePicker } from './time-picker';
