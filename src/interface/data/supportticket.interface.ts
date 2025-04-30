@@ -2,7 +2,7 @@ import { StoreInfo } from "./store.interface";
 import { UserInfo } from "./user.interface";
 
 export interface SupportTicketItem {
-    _id?: string;
+    _id: string;
     created_at: Date;
     transaction_id: string;
     customer_name: string;

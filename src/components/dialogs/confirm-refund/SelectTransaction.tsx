@@ -34,7 +34,7 @@ const SelectTransaction: React.FC<SelectTransactionProps> = ({ transactions, onS
   }, [transactions, searchKey]);
 
   const handleSelect = (value: string) => {
-    onSelect && onSelect(transactions.find(t => t.transaction_id == value) as TransactionItem);
+    onSelect && onSelect(transactions.find(t => t._id == value) as TransactionItem);
   };
 
   const handleSearch = (keyword: string) => {
@@ -42,7 +42,7 @@ const SelectTransaction: React.FC<SelectTransactionProps> = ({ transactions, onS
   };
 
   const renderItem = (item: TransactionItem) => ({
-    value: item.transaction_id,
+    value: item._id,
     label: (
       <div css={styles}>
         <div className="transaction-item">

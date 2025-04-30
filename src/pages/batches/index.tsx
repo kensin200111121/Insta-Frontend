@@ -167,7 +167,7 @@ const BatchPage: FC = () => {
                     }
                 </>}
         >
-            <MyTable dataSource={batches} columns={columns} rowKey={record => record.batch_id} pagable ShowAll
+            <MyTable dataSource={batches} columns={columns} rowKey={record => record._id} pagable ShowAll
                 onTableChange={handleTableChange} onShowAll={handleShowAll} total={total}/>
         </MyPage>
     )

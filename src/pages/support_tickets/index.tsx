@@ -190,7 +190,7 @@ const SupportTicketPage: FC = () => {
       <MyTable
         dataSource={filteredData}
         columns={columns}
-        rowKey={record => record._id || record.transaction_id}
+        rowKey={record => record._id}
         pagable
         ShowAll
       />

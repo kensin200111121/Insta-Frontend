@@ -1,10 +1,10 @@
 import type { LocationItem } from '@/interface/data/location.interface';
 import type { CreateUserRequest, UserInfoItem } from '@/interface/data/setting.interface';
 
-import { apiAddUser, apiGetLocation, apiGetUsers } from '@/api/pages/setting.api';
+import { apiAddUser, apiGetLocation, apiGetUsers, apiRemoveUser } from '@/api/pages/setting.api';
 import { createAsyncAction } from '@/stores/utils';
 
-import { addNewUser, setSettingLocation, setSettingState } from './reducer';
+import { addNewUser, removeUser, setSettingLocation, setSettingState } from './reducer';
 
 // typed wrapper async thunk function demo, no extra feature, just for powerful typings
 export const GetUsersAsync = createAsyncAction<void, boolean>(() => {
@@ -33,6 +33,24 @@ export const CreateNewUserAsync = createAsyncAction<CreateUserRequest, boolean>(
       dispatch(
         addNewUser({
           newUser: result,
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+
+export const RemoveUserAsync = createAsyncAction<string, boolean>((_id) => {
+  return async dispatch => {
+    const { result, status } = await apiRemoveUser(_id);
+
+    if (status) {
+      dispatch(
+        removeUser({
+          user_id: result
         }),
       );
 

@@ -97,7 +97,7 @@ const EnterprisePage: FC = () => {
                     <MyButton className='btn-info' style={{width: '206px'}} onClick={() => onCreateOpen()}>Add New Enterprise</MyButton>
                 </>}
         >
-            <MyTable dataSource={enterprises} columns={columns} rowKey={record => record.name} pagable ShowAll/>
+            <MyTable dataSource={enterprises} columns={columns} rowKey={record => record._id} pagable ShowAll/>
             <EnterpriseFormDialog className='title-center' onClose={onCreateClose} ref={createDialogRef} title={`${createFormMode ? 'Add New' : 'Edit'} Enterprise`} />
             <RemoveEnterpriseDialog css={styles} className='title-center' onClose={onRemoveEnterpriseClose} ref={removeDialogRef} title="Remove this Enterprise?" />
         </MyPage>

@@ -8,6 +8,7 @@ export interface MerchantAccountItem {
     monthly_volume: string;
     MID: string;
     descriptor: string;
+    terminalId: string;
     debit_rate: number;
     credit_rate: number;
     transaction_fee?: number;

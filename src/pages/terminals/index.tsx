@@ -97,13 +97,6 @@ const TerminalPage: FC = () => {
             renderExport: (val: string) => val
         },
         {
-            title: 'Terminal ID',
-            dataIndex: 'TPN',
-            key: 'TPN',
-            render: (val: string) => (<div style={{minWidth: '80px'}}>{val}</div>),
-            renderExport: (val: string) => val
-        },
-        {
             title: 'Model #',
             dataIndex: 'model_number',
             key: 'model_number',

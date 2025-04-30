@@ -7,6 +7,7 @@ export interface UserInfoItem {
   email: string;
   phone: string;
   pin: string;
+  permissions: Record<string, any>;
 }
 
 export interface CreateUserRequest {

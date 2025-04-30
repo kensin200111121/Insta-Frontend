@@ -18,6 +18,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
   const [userForm] = Form.useForm();
   const [form] = Form.useForm();
   const { users } = useSelector(state => state.setting);
+  const [ userInfoValid, setUserInfoValid ] = useState(false);
   const dispatch = useDispatch();
 
   const dialogRefUserPermission = useRef<DialogMethod<UserPermissionFormData>>(null);
@@ -34,16 +35,25 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
   });
 
   useEffect(() => {
-    userForm.setFieldsValue({
-      name: users?.[0]?.name ?? '',
-      pin: users?.[0]?.pin ?? ''
-    })
-  }, [users]);
-
-  useEffect(() => {
     if(dataSource?.bankInfo?.accountNumber){
       form.setFieldsValue({...dataSource, bankInfo: {...dataSource.bankInfo, accountNumber: dataSource.bankInfo.accountNumber.slice(-4)}});
     }
+    clearUserInfo();
+  }, [dataSource]);
+
+  const handleAddNewUser = async () => {
+    try {
+      const values = await userForm.validateFields(['name', 'pin']);
+      dispatch(CreateNewUserAsync({...values, permission}));
+      clearUserInfo();
+    } catch (errorInfo) {
+      console.log('Validation failed:', errorInfo);
+    }
+  };
+
+  const clearUserInfo = () => {
+    userForm.resetFields();
+    setUserInfoValid(false);
     setPermission({
       web: false,
       app: false,
@@ -55,21 +65,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
       ableViewBatches: false,
       ableViewSettings: false
     });
-  }, [dataSource]);
-
-  const onFinish = (values: any) => {
-    console.log('Received values of form:', values);
-  };
-
-  const handleAddNewUser = async () => {
-    try {
-      const values = await userForm.validateFields(['name', 'pin']);
-      dispatch(CreateNewUserAsync({...values, permission}));
-      userForm.resetFields();
-    } catch (errorInfo) {
-      console.log('Validation failed:', errorInfo);
-    }
-  };
+  }
 
   const handleEditPermission = () => {
     dialogRefUserPermission.current?.open(permission);
@@ -79,21 +75,30 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
     setPermission(permissions);
   };
 
+  const checkUserField = async () => {
+    userForm.validateFields(['name', 'pin']).then(values => {
+      setUserInfoValid(true);
+    })
+    .catch(e => {
+      setUserInfoValid(false);
+    });
+  }
+
   return (
     <>
       <div className="card-title">Settings</div>
       <h3>Location Address:</h3>
       <div css={styles} className="setting-form">
-        <Form form={form} name="settings_form" onFinish={onFinish} layout="vertical">
+        <Form form={form} name="settings_form" layout="vertical">
           <Row gutter={[24, 20]}>
             <Col lg={4} md={12} sm={12} xs={12}>
               <Form.Item name="name" rules={[{ required: true, message: 'Store Name is required!' }]}>
-                <Input placeholder="Store Name" className="w-full" />
+                <Input placeholder="Store Name" className="w-full" readOnly={true}/>
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
               <Form.Item name="dbaName" rules={[{ required: true, message: 'DBA Name is required!' }]}>
-                <Input placeholder="DBA Name" className="w-full" />
+                <Input placeholder="DBA Name" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
@@ -101,7 +106,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['storeInfo', 'address']}
                 rules={[{ required: true, message: 'Please input your address!' }]}
               >
-                <Input placeholder="Address" className="w-full" />
+                <Input placeholder="Address" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
@@ -109,12 +114,12 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['storeInfo', 'suite']}
                 rules={[{ required: true, message: 'Please input your suite #!' }]}
               >
-                <Input placeholder="Suite #" className="w-full" />
+                <Input placeholder="Suite #" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
               <Form.Item name={['storeInfo', 'city']} rules={[{ required: true, message: 'Please input your city!' }]}>
-                <Input placeholder="City" className="w-full" />
+                <Input placeholder="City" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
@@ -122,7 +127,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['storeInfo', 'state']}
                 rules={[{ required: true, message: 'Please input your state!' }]}
               >
-                <Input placeholder="State" className="w-full" />
+                <Input placeholder="State" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
@@ -130,7 +135,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['storeInfo', 'zip']}
                 rules={[{ required: true, message: 'Please input your zip code!' }]}
               >
-                <Input placeholder="Zip" className="w-full" />
+                <Input placeholder="Zip" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
             <Col lg={4} md={12} sm={12} xs={12}>
@@ -138,7 +143,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['storeInfo', 'phoneNumber']}
                 rules={[{ required: true, message: 'Please input your phone number!' }]}
               >
-                <Input placeholder="Phone Number" className="w-full" />
+                <Input placeholder="Phone Number" className="w-full" readOnly={true} />
               </Form.Item>
             </Col>
           </Row>
@@ -157,35 +162,39 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
               <h3>Tip Settings:</h3>
             </Col>
             <Col xl={8} lg={9} md={12} sm={24} xs={24}>
-              <Row gutter={20} className='nested-row'>
-                <Col span={8}>
-                  <Form.Item name={['tipAmounts', 0]} valuePropName="checked">
-                    <Button className={`w-full btn-green`}>
-                      {dataSource?.tipMode === 'fixed' && '$'}
-                      {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[0] : 0}
-                      {dataSource?.tipMode === 'percentage' && '%'}
-                    </Button>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item name={['tipAmounts', 1]} valuePropName="checked">
-                    <Button className={`w-full btn-green`}>
-                      {dataSource?.tipMode === 'fixed' && '$'}
-                      {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[1] : 0}
-                      {dataSource?.tipMode === 'percentage' && '%'}
-                    </Button>
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                    <Form.Item name={['tipAmounts', 2]} valuePropName="checked">
+              { dataSource?.noTip ? <Button className={`w-full btn-green`}>
+                  No Tip
+                </Button> :
+                <Row gutter={20} className='nested-row'>
+                  <Col span={8}>
+                    <Form.Item name={['tipAmounts', 0]} valuePropName="checked">
                       <Button className={`w-full btn-green`}>
                         {dataSource?.tipMode === 'fixed' && '$'}
-                        {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[2] : 0}
+                        {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[0] : 0}
                         {dataSource?.tipMode === 'percentage' && '%'}
                       </Button>
                     </Form.Item>
-                </Col>
+                  </Col>
+                  <Col span={8}>
+                    <Form.Item name={['tipAmounts', 1]} valuePropName="checked">
+                      <Button className={`w-full btn-green`}>
+                        {dataSource?.tipMode === 'fixed' && '$'}
+                        {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[1] : 0}
+                        {dataSource?.tipMode === 'percentage' && '%'}
+                      </Button>
+                    </Form.Item>
+                  </Col>
+                  <Col span={8}>
+                      <Form.Item name={['tipAmounts', 2]} valuePropName="checked">
+                        <Button className={`w-full btn-green`}>
+                          {dataSource?.tipMode === 'fixed' && '$'}
+                          {dataSource?.tipAmounts?.length ? dataSource?.tipAmounts[2] : 0}
+                          {dataSource?.tipMode === 'percentage' && '%'}
+                        </Button>
+                      </Form.Item>
+                  </Col>
                 </Row>
+              }
             </Col>
           </Row>
           <Row gutter={24}>
@@ -195,6 +204,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
             <Col xl={8} lg={9} md={12} sm={24} xs={24}>
               <Form.Item name="convenienceFee" valuePropName="checked">
                 <Button className={`w-full btn-green`}>
+                  { dataSource?.noConvenienceFee && 'No Convenience Fee'}
                   {
                     (dataSource?.percentageFeeMode ? (dataSource?.percentageFeeAmount ?? 0) + '%' : '')
                   }
@@ -257,7 +267,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                 name={['bankInfo', 'accountNumber']}
                 rules={[{ required: true, message: 'Please input your bank on file!' }]}
               >
-                <Input placeholder="xxxx xxxx xxxx 4242" className="w-full text-align-center" />
+                <Input placeholder="xxxx xxxx xxxx 4242" className="w-full text-align-center" readOnly={true}  />
               </Form.Item>
             </Col>
           </Row>
@@ -267,7 +277,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
             </Col>
             <Col xl={8} lg={9} md={12} sm={12} xs={24}>
               <Form.Item name={['merchant', 'descriptor']} rules={[{ required: true, message: 'Please input your descriptor!' }]}>
-                <Input placeholder="Descriptor" className="w-full text-align-center" />
+                <Input placeholder="Descriptor" className="w-full text-align-center" readOnly={true} />
               </Form.Item>
             </Col>
           </Row>
@@ -275,7 +285,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
         <Form form={userForm} name="basic" wrapperCol={{ span: 24 }} autoComplete="off" className="setting-form">
           <Row gutter={24}>
             <Col xl={4} lg={6} md={12} sm={12} xs={10}>
-              <h3>Add Authorized User:</h3>
+              <h3>Add New User:</h3>
             </Col>
             <Col xl={20} lg={18} md={12} sm={12} xs={14}>
               <Row gutter={[24, 20]} className="nested-row">
@@ -291,7 +301,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                     ]}
                     style={{ marginBottom: '0px' }}
                   >
-                    <Input placeholder="Enter User Name" />
+                    <Input placeholder="Enter User Name" onChange={checkUserField} />
                   </Form.Item>
                 </Col>
                 <Col lg={5} md={24} sm={24} xs={24}>
@@ -307,7 +317,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                     ]}
                     style={{ marginBottom: '0px' }}
                   >
-                    <Input placeholder="Enter PIN" type="password" maxLength={4}
+                    <Input.Password placeholder="Enter PIN" maxLength={4} visibilityToggle onChange={checkUserField}
                       onKeyDown={(e) => {
                         if (!/[0-9]|Backspace|Delete|Arrow/.test(e.key)) {
                           e.preventDefault();
@@ -317,12 +327,12 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                   </Form.Item>
                 </Col>
                 <Col lg={5} md={24} sm={24} xs={24}>
-                  <Button className="w-full" onClick={handleEditPermission}>
+                  <Button className={`w-full${userInfoValid ? ' btn-yellow' : ''}`} onClick={handleEditPermission}>
                     Permission
                   </Button>
                 </Col>
                 <Col lg={6} md={24} sm={24} xs={24}>
-                  <Button className="w-full" onClick={handleAddNewUser}>
+                  <Button className={`w-full${userInfoValid ? ' btn-green' : ''}`} onClick={handleAddNewUser}>
                     Add New User
                   </Button>
                 </Col>

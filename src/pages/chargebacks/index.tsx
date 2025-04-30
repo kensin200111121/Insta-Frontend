@@ -120,7 +120,7 @@ const ChargebackPage: FC = () => {
         renderExport: (val: StoreInfo) => val?.name
       },
       {
-        title: 'Location Name',
+        title: 'DBA Name',
         dataIndex: 'store',
         key: 'store',
         render: (val: StoreInfo) => (<div style={{minWidth: '70px'}}>{val?.dbaName}</div>),
@@ -257,7 +257,7 @@ const ChargebackPage: FC = () => {
       <MyTable
         dataSource={chargebacks}
         columns={columns}
-        rowKey={record => record.transaction_id}
+        rowKey={record => record._id}
         pagable
         ShowAll
         onTableChange={handleTableChange}

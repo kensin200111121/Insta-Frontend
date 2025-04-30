@@ -19,6 +19,10 @@ export interface AddNewUser {
   newUser: UserInfoItem;
 }
 
+export interface RemoveUser {
+  user_id: string
+}
+
 const initialState: SettingState = {
   ...getGlobalState(),
   users: [],
@@ -35,12 +39,16 @@ const settingSlice = createSlice({
     addNewUser(state, action: PayloadAction<AddNewUser>) {
       state.users.unshift(action.payload.newUser);
     },
+    removeUser(state, action: PayloadAction<RemoveUser>) {
+      const index = state.users.findIndex(user => user._id == action.payload.user_id)
+      state.users.splice(index, 1);
+    },
     setSettingLocation(state, action: PayloadAction<Partial<SettingLocation>>) {
       Object.assign(state, action.payload);
     },
   },
 });
 
-export const { setSettingState, addNewUser, setSettingLocation } = settingSlice.actions;
+export const { setSettingState, addNewUser, setSettingLocation, removeUser } = settingSlice.actions;
 
 export default settingSlice.reducer;

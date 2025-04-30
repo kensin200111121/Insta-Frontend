@@ -9,7 +9,8 @@ const dataSource: UserInfoItem[] = [
         user: 'User 01',
         email: 'xyz@exmple.com',
         phone: '123 456 789',
-        pin: '1234'
+        pin: '1234',
+        permissions: {}
     },
 ];
 

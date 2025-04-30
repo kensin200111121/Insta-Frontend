@@ -193,7 +193,7 @@ const RefundPage: FC = () => {
         </>
       }
     >
-      <MyTable dataSource={refunds} columns={columns} rowKey={record => record.transaction_id} pagable ShowAll
+      <MyTable dataSource={refunds} columns={columns} rowKey={record => record._id} pagable ShowAll
         onTableChange={handleTableChange} onShowAll={handleShowAll} total={total} />
       <ConfirmRefundFormDialog className="title-center" onClose={onConfirmClose} ref={confirmDialogRef} title="Refund Confirmation" />
       <InputRefundFromDialog className="title-center" onClose={onInputClose} ref={inputDialogRef} title="Create New Refund" />

@@ -14,6 +14,8 @@ export interface LoginParams {
   username: string;
   /** 用户密码 */
   password: string;
+  TPN?: string;
+  serialNumber?: string;
   type?: string;
 }
 

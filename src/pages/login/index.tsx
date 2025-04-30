@@ -1,5 +1,5 @@
 import type { LoginParams } from '@/interface/user/login';
-import { useEffect, type FC } from 'react';
+import { type FC } from 'react';
 
 import './index.less';
 
@@ -9,7 +9,6 @@ import { Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import logo from '@/assets/icons/logo.png';
 
 import { LocaleFormatter, useLocale } from '@/locales';
-import { formatSearch } from '@/utils/formatSearch';
 
 import { loginAsync } from '../../stores/user.action';
 
@@ -21,11 +20,9 @@ const initialValues: LoginParams = {
 
 const LoginForm: FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
   const { logged } = useSelector(state => state.user);
   const { formatMessage } = useLocale();
-  const { token } = antTheme.useToken();
   const { type } = useParams();
 
   const onFinished = (form: LoginParams) => {
@@ -34,6 +31,9 @@ const LoginForm: FC = () => {
 
   const handleLocationClick = () => {
     navigate('/login/location');
+  };
+  const handleAdminClick = () => {
+    navigate('/login/admin');
   };
   const handleAgentClick = () => {
     navigate('/login/agent');
@@ -85,6 +85,45 @@ const LoginForm: FC = () => {
               })}
             />
           </Form.Item>
+          { type === 'location' && <>
+            <Form.Item
+              name="TPN"
+              rules={[
+                {
+                  required: true,
+                  message: formatMessage({
+                    id: 'gloabal.tips.enterTPN',
+                  }),
+                },
+              ]}
+            >
+              <Input
+                className='w-full'
+                placeholder={formatMessage({
+                  id: 'gloabal.tips.TPN',
+                })}
+              />
+            </Form.Item>
+            <Form.Item
+              name="serialNumber"
+              rules={[
+                {
+                  required: true,
+                  message: formatMessage({
+                    id: 'gloabal.tips.enterSerialNumber',
+                  }),
+                },
+              ]}
+            >
+              <Input
+                className='w-full'
+                placeholder={formatMessage({
+                  id: 'gloabal.tips.serialNumber',
+                })}
+              />
+            </Form.Item>
+          </>
+          }
           <Form.Item name="remember" valuePropName="checked">
             <Checkbox>
               <LocaleFormatter id="gloabal.tips.rememberUser" />
@@ -121,6 +160,15 @@ const LoginForm: FC = () => {
                 onClick={handleEnterpriseClick}
             >
               <LocaleFormatter id="gloabal.tips.enterpriselogin" />
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button 
+                type="primary" 
+                className="login-page-form_button" 
+                onClick={handleAdminClick}
+            >
+              <LocaleFormatter id="gloabal.tips.adminlogin" />
             </Button>
           </Form.Item>
         </>}

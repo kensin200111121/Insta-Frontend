@@ -84,7 +84,7 @@ const TransactionPage: FC = () => {
       title: 'Time',
       render: (val: any, record: TransactionItem) => moment(record.created_at).format('hh:mm:ss A'),
     },
-    ...(role === USER_ROLE.admin ? [
+    ...(role === USER_ROLE.admin || role === USER_ROLE.agent ? [
       {
         title: 'Location Name',
         render: (val: any, record: TransactionItem) => (<div style={{minWidth: '100px'}}>{record.store?.name}</div>),
@@ -99,29 +99,29 @@ const TransactionPage: FC = () => {
         title: 'Location ID',
         render: (val: any, record: TransactionItem) => (<div style={{minWidth: '80px'}}>{record.store?.storeId}</div>),
         renderExport: (val: any, record: TransactionItem) => record.store?.storeId
-      },
-      {
-        title: 'Terminal S/N',
-        dataIndex: 'terminal_sn',
-        key: 'terminal_sn',
-        render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
-        renderExport: (val: string) => val
-      },
-      {
-        title: 'Terminal TPN',
-        dataIndex: 'terminal_tpn',
-        key: 'terminal_tpn',
-        render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
-        renderExport: (val: string) => val
-      },
-      {
-        title: 'Batch ID',
-        dataIndex: 'batchId',
-        key: 'batchId',
-        render: (val: string) => (<div style={{minWidth: '80px'}}>{val}</div>),
-        renderExport: (val: string) => val
       }] : []
     ),
+    {
+      title: 'Terminal S/N',
+      dataIndex: 'terminal_sn',
+      key: 'terminal_sn',
+      render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+      renderExport: (val: string) => val
+    },
+    {
+      title: 'Terminal TPN',
+      dataIndex: 'terminal_tpn',
+      key: 'terminal_tpn',
+      render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+      renderExport: (val: string) => val
+    },
+    {
+      title: 'Batch ID',
+      dataIndex: 'batchId',
+      key: 'batchId',
+      render: (val: string) => (<div style={{minWidth: '80px'}}>{val}</div>),
+      renderExport: (val: string) => val
+    },
     {
       title: 'User Name',
       render: (val: any, record: TransactionItem) => (<div style={{minWidth: '80px'}}>{record.user?.name}</div>),
@@ -212,7 +212,7 @@ const TransactionPage: FC = () => {
       render: (val: number) => (<div style={{minWidth: '80px'}}>{getPriceNumber(val)}</div>),
       renderExport: (val: number) => getFormatedNumber(val)
     },
-    ...(role === USER_ROLE.agent ? [{
+    ...(role === USER_ROLE.admin || role === USER_ROLE.agent ? [{
       title: 'Commissions',
       dataIndex: 'commission_amount',
       key: 'commission_amount',
@@ -334,7 +334,7 @@ const TransactionPage: FC = () => {
       <MyTable
         dataSource={transactions}
         columns={columns}
-        rowKey={record => record.transaction_id}
+        rowKey={record => record._id}
         rowClassName={record => (record.isRefunded ? 'highlight-row' : '')}
         pagable
         onTableChange={handleTableChange}

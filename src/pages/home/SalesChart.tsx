@@ -75,8 +75,10 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange }) => {
     const temp = salesData[curTab].map(label => ({ name: label, sales: 0}))
     let sum = 0;
     for (const sale of sales) {
-      temp[sale.time].sales = sale.amount;
-      sum += sale.amount;
+      if (temp[sale.time]) {
+        temp[sale.time].sales = sale.amount;
+        sum += sale.amount;
+      }
     }
     setData(temp);
     setTotal(sum);

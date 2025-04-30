@@ -51,6 +51,8 @@ axiosInstance.interceptors.response.use(
     return config?.data;
   },
   error => {
+    let errorMessage = error?.response?.data?.message || 'Network ERROR';
+
     if (error?.response?.status === 401) {
       store.dispatch(
         logoutAsync(),
@@ -63,15 +65,13 @@ axiosInstance.interceptors.response.use(
     );
     // if needs to navigate to login page when request exception
     // history.replace('/login');
-    let errorMessage = 'Network Error';
 
     if (error?.message?.includes('Network Error')) {
       errorMessage = 'Network Error';
-    } else {
+    } else if (errorMessage === 'Network Error') {
       errorMessage = error?.message;
     }
 
-    console.dir(error);
     error.message && $message.error(errorMessage);
 
     return {

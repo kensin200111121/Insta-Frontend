@@ -1,9 +1,8 @@
 import withDialog from '@/patterns/hoc/withDialog';
 import { DialogContentProps } from '@/types/props/dialog.type';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Form, Col } from 'antd';
 import { MyButton, MyInput, MySelect } from '@/components/basic';
-import { LocationItem } from '@/interface/data/location.interface';
 import { selectTerminalDescriptionOptions, selectTerminalModels } from '@/patterns/selectOptions';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetLocationsAsync } from '@/pages/locations/store/action';
@@ -19,7 +18,6 @@ export type TerminalFormData = {
 
 const TerminalForm: React.FC<DialogContentProps<any, TerminalFormData>> = ({ data, onClose }) => {
     const [form] = Form.useForm();
-    const { terminals } = useSelector(state => state.terminal);
     const { locations } = useSelector(state => state.location);
     const dispatch = useDispatch();
 
@@ -34,9 +32,8 @@ const TerminalForm: React.FC<DialogContentProps<any, TerminalFormData>> = ({ dat
             form.setFieldsValue(data);
         }else{
             form.resetFields();
-            form.setFieldValue('model', terminals?.[0]?.model_number);
         }
-    }, [data, terminals]);
+    }, [data]);
 
     const handleOK = async () => {
         try {

@@ -14,6 +14,7 @@ export type MerchantAccountFormData = {
     debit_rate: number;
     credit_rate: number;
     transaction_fee: number;
+    terminalId: string;
     note?: string;
 }
 
@@ -99,6 +100,12 @@ const MerchantAccountForm: React.FC<DialogContentProps<any, MerchantAccountFormD
                 rules={[{ required: true, message: 'Descriptor is invalidate!' }]}
                 >
                     <MyInput placeholder='Descriptor' />
+                </Form.Item>
+                <Form.Item
+                name="terminalId"
+                rules={[{ required: true, message: 'Terminal ID is invalidate!' }]}
+                >
+                    <MyInput placeholder='Terminal ID' />
                 </Form.Item>
                 <Form.Item
                 name="note"

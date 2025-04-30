@@ -93,6 +93,13 @@ const MerchantAccountPage: FC = () => {
             renderExport: (val: string) => val
         },
         {
+            title: 'Terminal ID',
+            dataIndex: 'terminalId',
+            key: 'terminalId',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
             title: 'Debit Rate',
             dataIndex: 'debit_rate',
             key: 'debit_rate',
@@ -138,7 +145,7 @@ const MerchantAccountPage: FC = () => {
                     <MyButton className='btn-info' style={{width: '206px'}} onClick={() => onCreateOpen()}>Add New Merchant Account</MyButton>
                 </>}
         >
-            <MyTable dataSource={merchant_accounts} columns={columns} rowKey={record => record.iso_name} pagable ShowAll/>
+            <MyTable dataSource={merchant_accounts} columns={columns} rowKey={record => record._id} pagable ShowAll/>
             <MerchantAccountFormDialog className='title-center' onClose={onCreateClose} ref={createDialogRef} title={`${selectedId.length ? 'Edit' : 'Add New'} Merchant Account`} />
             <NoteFormDialog className='title-center' onClose={onNoteClose} ref={noteDialogRef} title="Enter Notes for this merchant account" />
             <SeeNoteFormDialog onClose={() => {}} ref={seeNoteDialogRef} title="Notes Description" />

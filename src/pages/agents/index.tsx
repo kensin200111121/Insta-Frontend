@@ -258,7 +258,7 @@ const AgentPage: FC = () => {
                     <MyButton className='btn-info' style={{width: '206px'}} onClick={onCreateOpen}>Add New Agent</MyButton>
                 </>}
         >
-            <MyTable dataSource={agents} columns={columns} rowKey={record => record.agentInfo.agentCompanyName} pagable ShowAll/>
+            <MyTable dataSource={agents} columns={columns} rowKey={record => record._id} pagable ShowAll/>
             <AgentFormDialog className='title-center' onClose={onDialogClose} ref={createDialogRef} title="Add New Agent" />
             <AgentFormDialog className='title-center' onClose={onDialogClose} ref={editDialogRef} title="Edit Agent" />
             <RemoveAgentDialog css={styles} className='title-center' onClose={onRemoveAgentClose} ref={removeDialogRef} title="Remove this Agent?" />

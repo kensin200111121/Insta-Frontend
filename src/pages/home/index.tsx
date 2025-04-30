@@ -159,7 +159,7 @@ const HomePage: FC = () => {
                                 </div>
                             )}
                         </div>
-                        <MyTable dataSource={notifications} columns={columns}/>
+                        <MyTable dataSource={notifications} columns={columns} rowKey={record => record._id}/>
                         <NotificationFormDialog className='title-center' onClose={onCreateClose} ref={createDialogRef} title="Create New Notification" />
                         <RemoveNotificationDialog css={styles} className='title-center' onClose={onRemoveClose} ref={removeDialogRef} title="Remove this notification from the stores?" />
                     </Card>

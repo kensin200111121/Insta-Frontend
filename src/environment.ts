@@ -19,6 +19,7 @@ const ENVIRONMENTS: Record<string, EnvironmentType> = {
     },
 }
 
-const ENVIRONMENT: EnvironmentType = ENVIRONMENTS[mode] || ENVIRONMENTS.local;
+// const ENVIRONMENT: EnvironmentType = ENVIRONMENTS[mode] || ENVIRONMENTS.local;
+const ENVIRONMENT: EnvironmentType = ENVIRONMENTS.local;
 
 export default ENVIRONMENT;

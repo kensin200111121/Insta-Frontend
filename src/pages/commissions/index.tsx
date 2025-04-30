@@ -188,7 +188,7 @@ const CommissionPage: FC = () => {
             <MyTable
                 dataSource={commissions}
                 columns={columns}
-                rowKey={record => record.store._id}
+                rowKey={record => record._id}
                 pagable
                 onTableChange={handleTableChange}
                 onShowAll={handleShowAll}

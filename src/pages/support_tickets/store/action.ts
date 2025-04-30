@@ -28,6 +28,7 @@ export const GetSupportTicketsAsync = createAsyncAction<void, boolean>(() => {
 
 export const CreateNewTicketAsync = createAsyncAction<TicketFormData, boolean>(data => {
   const post_data: SupportTicketItem = {
+    _id: '',
     created_at: new Date(),
     phone: '000 000 000',
     amount: 100,
