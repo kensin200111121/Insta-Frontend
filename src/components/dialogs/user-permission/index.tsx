@@ -70,7 +70,7 @@ const UserPermissionForm: React.FC<DialogContentProps<UserPermissionFormData, Us
       className="setting-form"
     >
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox
             checked={Object.values(permissions).every(Boolean)}
             onChange={(e) => handleUserPermissionChangeAll(e.target.checked)}
@@ -80,63 +80,63 @@ const UserPermissionForm: React.FC<DialogContentProps<UserPermissionFormData, Us
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.web === true} onChange={() => handleUserPermissionChange('web')}>
             Web Only
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.app === true} onChange={() => handleUserPermissionChange('app')}>
             App Only
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.onlyUserTransaction === true} onChange={() => handleUserPermissionChange('onlyUserTransaction')}>
             Only Show User Transactions
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.ableRefund === true} onChange={() => handleUserPermissionChange('ableRefund')}>
             Can Refund
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox className='w-full' checked={permissions?.ableChargeback === true} onChange={() => handleUserPermissionChange('ableChargeback')}>
             Can Submit Chargeback
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.ableViewDashboard === true} onChange={() => handleUserPermissionChange('ableViewDashboard')}>
             Can View Dashboard
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.ableCreateTicket === true} onChange={() => handleUserPermissionChange('ableCreateTicket')}>
             Can Create Tickets
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.ableViewBatches === true} onChange={() => handleUserPermissionChange('ableViewBatches')}>
             Can View Batches
           </Checkbox>
         </Col>
       </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Checkbox checked={permissions?.ableViewSettings === true} onChange={() => handleUserPermissionChange('ableViewSettings')}>
             Can View Settings
           </Checkbox>

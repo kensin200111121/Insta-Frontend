@@ -1,4 +1,4 @@
-import type { LocationItem } from '@/interface/data/location.interface';
+import type { LocationItem, ReportUserInterface } from '@/interface/data/location.interface';
 import type { UserInfoItem } from '@/interface/data/setting.interface';
 
 import { css } from '@emotion/react';
@@ -6,9 +6,11 @@ import { Button, Col, Form, Input, Row } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { CreateNewUserAsync } from './store/action';
+import { CreateNewReporterAsync, CreateNewUserAsync } from './store/action';
 import UserPermissionFormDialog, { UserPermissionFormData } from '@/components/dialogs/user-permission';
 import { DialogMethod } from '@/types/props/dialog.type';
+import { MySelect } from '@/components/basic';
+import { selectReporterTypeOptions, selectReportTypeOptions } from '@/patterns/selectOptions';
 
 interface SettingFormProps {
   dataSource: LocationItem; // Define the dataSource prop
@@ -16,9 +18,11 @@ interface SettingFormProps {
 
 const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
   const [userForm] = Form.useForm();
+  const [reporterForm] = Form.useForm();
   const [form] = Form.useForm();
   const { users } = useSelector(state => state.setting);
   const [ userInfoValid, setUserInfoValid ] = useState(false);
+  const [ reporterInfoValid, setReporterInfoValid ] = useState(false);
   const dispatch = useDispatch();
 
   const dialogRefUserPermission = useRef<DialogMethod<UserPermissionFormData>>(null);
@@ -39,6 +43,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
       form.setFieldsValue({...dataSource, bankInfo: {...dataSource.bankInfo, accountNumber: dataSource.bankInfo.accountNumber.slice(-4)}});
     }
     clearUserInfo();
+    reporterForm.resetFields();
   }, [dataSource]);
 
   const handleAddNewUser = async () => {
@@ -81,6 +86,25 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
     })
     .catch(e => {
       setUserInfoValid(false);
+    });
+  }
+
+  const handleAddNewReporter = async () => {
+    try {
+      const values = await reporterForm.validateFields(['name', 'email', 'phone', 'type']);
+      dispatch(CreateNewReporterAsync(values));
+      reporterForm.resetFields();
+    } catch (errorInfo) {
+      console.log('Validation failed:', errorInfo);
+    }
+  };
+
+  const checkReporterField = async () => {
+    reporterForm.validateFields(['name', 'email', 'phone', 'type']).then(values => {
+      setReporterInfoValid(true);
+    })
+    .catch(e => {
+      setReporterInfoValid(false);
     });
   }
 
@@ -289,7 +313,7 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
             </Col>
             <Col xl={20} lg={18} md={12} sm={12} xs={14}>
               <Row gutter={[24, 20]} className="nested-row">
-                <Col lg={8} md={24} sm={24} xs={24}>
+                <Col lg={10} md={24} sm={24} xs={24}>
                   <Form.Item<UserInfoItem>
                     name="name"
                     rules={[
@@ -326,12 +350,12 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
                     />
                   </Form.Item>
                 </Col>
-                <Col lg={5} md={24} sm={24} xs={24}>
+                <Col lg={4} md={24} sm={24} xs={24}>
                   <Button className={`w-full${userInfoValid ? ' btn-yellow' : ''}`} onClick={handleEditPermission}>
                     Permission
                   </Button>
                 </Col>
-                <Col lg={6} md={24} sm={24} xs={24}>
+                <Col lg={5} md={24} sm={24} xs={24}>
                   <Button className={`w-full${userInfoValid ? ' btn-green' : ''}`} onClick={handleAddNewUser}>
                     Add New User
                   </Button>
@@ -346,6 +370,59 @@ const SettingForm: React.FC<SettingFormProps> = ({ dataSource }) => {
             ref={dialogRefUserPermission}
             title="User Permissions"
           />
+        </Form>
+        <Form<ReportUserInterface> form={reporterForm} name="basic" wrapperCol={{ span: 24 }} autoComplete="off" className="setting-form">
+          <Row gutter={24}>
+            <Col xl={4} lg={6} md={12} sm={12} xs={10}>
+              <h3>Add New Reporter:</h3>
+            </Col>
+            <Col xl={20} lg={18} md={12} sm={12} xs={14}>
+              <Row gutter={[24, 20]} className="nested-row">
+                <Col lg={5} md={24} sm={24} xs={24}>
+                  <Form.Item<ReportUserInterface>
+                    name='name'
+                    rules={[{ required: true, message: 'Name is invalidate!' }]}
+                  >
+                    <Input placeholder="Name" onChange={checkReporterField} />
+                  </Form.Item>
+                </Col>
+                <Col lg={5} md={24} sm={24} xs={24}>
+                  <Form.Item<ReportUserInterface>
+                    name='email'
+                    rules={[{ required: true, message: 'Email is invalidate!' }]}
+                  >
+                    <Input placeholder="Email" onChange={checkReporterField} />
+                  </Form.Item>
+                </Col>
+                <Col lg={5} md={24} sm={24} xs={24}>
+                  <Form.Item<ReportUserInterface>
+                    name='phone'
+                    rules={[{ required: true, message: 'Phone Number is invalidate!' }]}
+                  >
+                    <Input placeholder="Phone Number" onChange={checkReporterField} />
+                  </Form.Item>
+                </Col>
+                <Col lg={4} md={24} sm={24} xs={24}>
+                  <Form.Item<ReportUserInterface>
+                    name='type'
+                    rules={[{ required: true, message: 'Report type is invalidate!' }]}
+                  >
+                    <MySelect
+                      className="w-full"
+                      options={selectReporterTypeOptions}
+                      placeholder="Report Type"
+                      onChange={checkReporterField}
+                    />
+                  </Form.Item>
+                </Col>
+                <Col lg={5} md={24} sm={24} xs={24}>
+                  <Button className={`w-full${reporterInfoValid ? ' btn-green' : ''}`} onClick={handleAddNewReporter}>
+                    Add New Reporter
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
         </Form>
       </div>
     </>

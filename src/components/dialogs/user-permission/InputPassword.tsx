@@ -3,28 +3,27 @@ import { DialogContentProps } from '@/types/props/dialog.type';
 import React, { useEffect } from 'react';
 import { Form } from 'antd';
 import { MyButton, MyInput } from '@/components/basic';
-import { apiGetUserInfo } from '@/api/pages/setting.api';
-import { UserInfoItem } from '@/interface/data/setting.interface';
+import { apiGetUsersWithPins } from '@/api/pages/setting.api';
+import { useDispatch } from 'react-redux';
+import { setSettingState } from '@/pages/settings/store/reducer';
 
 export interface InputPasswordFormData{
     password: string
 }
 
-const InputPasswordForm: React.FC<DialogContentProps<string, UserInfoItem>> = ({ data, onClose }) => {
+const InputPasswordForm: React.FC<DialogContentProps<any, any>> = ({ onClose }) => {
 
     const [form] = Form.useForm();
-
-    useEffect(() => {
-        form.resetFields();
-    }, [data]);
+    const dispatch = useDispatch();
 
     const handleOK = async () => {
         try {
             const values = await form.validateFields();
-            apiGetUserInfo(data, values.password)
+            apiGetUsersWithPins(values.password)
             .then(res => {
                 if (res.status) {
-                    onClose(res.result);
+                    dispatch(setSettingState({users: res.result}));
+                    onClose();
                     form.resetFields();
                 }else{
                     form.setFields([{name: 'password', errors: [res.message]}]);

@@ -215,12 +215,12 @@ const EditLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, Lo
     const lastMember = userMembers[userMembers.length - 1];
     const nameExists = userMembers.slice(0, -1).some(member => member.name === lastMember.name);
     const pinExists = userMembers.slice(0, -1).some(member => member.pin === lastMember.pin);
-    if (!lastMember.name) {
+    if (lastMember && !lastMember.name) {
         message.error('Name is required!');
         return;
     }
 
-    if (!lastMember.pin) {
+    if (lastMember && !lastMember.pin) {
         message.error('PIN is required!');
         return;
     }

@@ -1,12 +1,30 @@
-import type { LocationItem } from '@/interface/data/location.interface';
-import type { CreateUserRequest, UserInfoItem } from '@/interface/data/setting.interface';
+import type { ReportUserInterface } from '@/interface/data/location.interface';
+import type { CreateUserRequest } from '@/interface/data/setting.interface';
 
-import { apiAddUser, apiGetLocation, apiGetUsers, apiRemoveUser } from '@/api/pages/setting.api';
+import { apiAddReporter, apiAddUser, apiGetLocation, apiGetReporters, apiGetUsers, apiGetUsersWithPins, apiRemoveReporter, apiRemoveUser } from '@/api/pages/setting.api';
 import { createAsyncAction } from '@/stores/utils';
 
-import { addNewUser, removeUser, setSettingLocation, setSettingState } from './reducer';
+import { addNewReporter, addNewUser, removeReporter, removeUser, setSettingLocation, setSettingState } from './reducer';
 
 // typed wrapper async thunk function demo, no extra feature, just for powerful typings
+export const GetUsersWithPinsAsync = createAsyncAction<string, boolean>((data) => {
+  return async dispatch => {
+    const { result, status } = await apiGetUsersWithPins(data);
+
+    if (status) {
+      dispatch(
+        setSettingState({
+          users: result,
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+
 export const GetUsersAsync = createAsyncAction<void, boolean>(() => {
   return async dispatch => {
     const { result, status } = await apiGetUsers();
@@ -78,3 +96,58 @@ export const GetUserLocation = createAsyncAction<void, boolean>(() => {
     return false;
   };
 });
+
+export const GetReportersAsync = createAsyncAction<void, boolean>(() => {
+  return async dispatch => {
+    const { result, status } = await apiGetReporters();
+
+    if (status) {
+      dispatch(
+        setSettingState({
+          reporters: result,
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+
+export const CreateNewReporterAsync = createAsyncAction<ReportUserInterface, boolean>(data => {
+  return async dispatch => {
+    const { result, status } = await apiAddReporter(data);
+
+    if (status) {
+      dispatch(
+        addNewReporter({
+          newReporter: result,
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+
+export const RemoveReporterAsync = createAsyncAction<string, boolean>((_id) => {
+  return async dispatch => {
+    const { result, status } = await apiRemoveReporter(_id);
+
+    if (status) {
+      dispatch(
+        removeReporter({
+          reporter_id: result
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+

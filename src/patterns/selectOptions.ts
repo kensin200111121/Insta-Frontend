@@ -305,3 +305,19 @@ export const selectTerminalModels: SelectOption<string>[] = [
     value: 'P8',
   }
 ];
+
+export const selectReporterTypeOptions: SelectOption<string>[] = [
+  {
+    label: 'Email Only',
+    value: 'EmailOnly',
+  },
+  {
+    label: 'Text Only',
+    value: 'TextOnly',
+  },
+  {
+    label: 'Both',
+    value: 'Both',
+  },
+];
+
