@@ -14,6 +14,7 @@ import { USER_ROLE } from '@/interface/user/login';
 import { TablePaginationConfig } from 'antd';
 import { BatchItem } from '@/interface/data/batch.interface';
 import StatusCell from '../support_tickets/StatusCell';
+import { apiGetBatches } from '@/api/pages/batch.api';
 
 const BatchPage: FC = () => {
 
@@ -25,9 +26,14 @@ const BatchPage: FC = () => {
     const [ dateRange, setDateRange ] = useState<string[]>([]);
     const [ searchKey, setSearchKey ] = useState('');
 
-    const handleExport = () => {
-        exportToExcel(batches, columns, 'Batches');
-    }
+    const handleExport = async () => {
+        const { result, status } = await apiGetBatches({filters});
+        if(status){
+            exportToExcel(result.data, columns, 'Batches');
+        }else{
+            console.log('error in export');
+        }
+    };
 
     const handleTableChange = (pagination: TablePaginationConfig, filtersInTable: Record<string, any>, sorter: any) => {
         setPagination(pagination);
@@ -65,14 +71,14 @@ const BatchPage: FC = () => {
             title: role === USER_ROLE.admin ? 'Batch Date' : 'Date',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
+            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
             renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
         },
         {
             title: 'Funding Date',
             dataIndex: 'funded_at',
             key: 'funded_at',
-            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
+            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
             renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
         },
         ...(role === USER_ROLE.admin ? [
@@ -132,6 +138,7 @@ const BatchPage: FC = () => {
                         options={batchStatusOptions}
                         colors={batchStatusColors}
                         onChange={handleStatusChange}
+                        disabled={role === USER_ROLE.user}
                     />
                 ) : (
                     <div style={{minWidth: '100px'}}>OPEN</div>

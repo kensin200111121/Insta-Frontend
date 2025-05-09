@@ -13,17 +13,19 @@ import TerminalFormDialog, { TerminalFormData } from '@/components/dialogs/termi
 import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-form/see-note';
 import { DialogMethod } from '@/types/props/dialog.type';
 import exportToExcel from '@/utils/exportToExcel';
-import { GetLocationsAsync } from '../locations/store/action';
 import moment from 'moment';
+import { GetMerchantAccountAsync } from '../merchant_accounts/store/action';
 
 const TerminalPage: FC = () => {
 
     const dispatch = useDispatch();
     const { terminals } = useSelector(state => state.terminal);
     const [ selectedId, setSelectedId ] = useState('');
+    const { merchant_accounts } = useSelector(state => state.merchantaccount);
 
     useEffect(() => {
         dispatch(GetTerminalsAsync());
+        dispatch(GetMerchantAccountAsync());
     }, []);
 
     const createDialogRef = useRef<DialogMethod<any>>(null);
@@ -40,6 +42,7 @@ const TerminalPage: FC = () => {
             model: data.model_number,
             token: data.token,
             description: data.description,
+            merchant: merchant_accounts.find(d => d.MID === data.MID)?._id
         } : {});
     };
 
@@ -94,6 +97,13 @@ const TerminalPage: FC = () => {
             dataIndex: 'serial_number',
             key: 'serial_number',
             render: (val: string, record: TerminalItem) => (<div style={{minWidth: '80px'}}><a onClick={() => {onCreateOpen(record)}}>{val}</a></div>),
+            renderExport: (val: string) => val
+        },
+        {
+            title: 'TPN',
+            dataIndex: 'TPN',
+            key: 'TPN',
+            render: (val: string) => (<div style={{minWidth: '80px'}}>{val}</div>),
             renderExport: (val: string) => val
         },
         {

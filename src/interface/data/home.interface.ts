@@ -12,6 +12,7 @@ export interface NotificationItem {
 export interface chartRequest {
     mode: string,
     timezone: string,
+    dateRange: string[]|undefined,
     stores: string[]|undefined,
 }
 

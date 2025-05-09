@@ -115,7 +115,7 @@ const SupportTicketPage: FC = () => {
       dataIndex: 'status',
       key: 'status',
       render: (val: number, record: SupportTicketItem) => (
-        <StatusCell<number> recordId={record._id || ''} status={val} options={supportTicketStatusOptions} colors={supportTicketStatusColors} onChange={handleStatusChange} />
+        <StatusCell<number> recordId={record._id || ''} status={val} options={supportTicketStatusOptions} colors={supportTicketStatusColors} onChange={handleStatusChange} disabled={false} />
       ),
     },
     {

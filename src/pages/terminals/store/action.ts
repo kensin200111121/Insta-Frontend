@@ -8,7 +8,7 @@ import { TerminalUpdateRequest } from '@/interface/data/terminal.interface';
 // typed wrapper async thunk function demo, no extra feature, just for powerful typings
 export const GetTerminalsAsync = createAsyncAction<void, boolean>(() => {
   return async dispatch => {
-    const { result, status } = await apiGetTerminals();
+    const { result, status } = await apiGetTerminals(undefined);
 
     if (status) {
       dispatch(

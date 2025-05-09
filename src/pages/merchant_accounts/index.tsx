@@ -11,7 +11,6 @@ import NoteFormDialog, { NoteFormData } from '@/components/dialogs/note-form';
 import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-form/see-note';
 import { DialogMethod } from '@/types/props/dialog.type';
 import { MerchantAccountItem } from '@/interface/data/merchantaccount.interface';
-import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 
 const MerchantAccountPage: FC = () => {
 
@@ -93,32 +92,46 @@ const MerchantAccountPage: FC = () => {
             renderExport: (val: string) => val
         },
         {
+            title: 'BIN #',
+            dataIndex: 'binNum',
+            key: 'binNum',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
+            title: 'Agent #',
+            dataIndex: 'agentNum',
+            key: 'agentNum',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
+            title: 'Chain #',
+            dataIndex: 'chainNum',
+            key: 'chainNum',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
+            title: 'Store #',
+            dataIndex: 'storeNum',
+            key: 'storeNum',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
+            title: 'Terminal #',
+            dataIndex: 'terminalNum',
+            key: 'terminalNum',
+            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
+            renderExport: (val: string) => val
+        },
+        {
             title: 'Terminal ID',
             dataIndex: 'terminalId',
             key: 'terminalId',
             render: (val: string) => (<div style={{minWidth: '100px'}}>{val}</div>),
             renderExport: (val: string) => val
-        },
-        {
-            title: 'Debit Rate',
-            dataIndex: 'debit_rate',
-            key: 'debit_rate',
-            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}%</div>),
-            renderExport: (val: string) => val
-        },
-        {
-            title: 'Credit Rate',
-            dataIndex: 'credit_rate',
-            key: 'credit_rate',
-            render: (val: string) => (<div style={{minWidth: '100px'}}>{val}%</div>),
-            renderExport: (val: string) => val
-        },
-        {
-            title: 'Transaction Fee',
-            dataIndex: 'transaction_fee',
-            key: 'transaction_fee',
-            render: (val: number) => (<div style={{minWidth: '120px'}}>{getPriceNumber(val)}</div>),
-            renderExport: (val: number) => getFormatedNumber(val)
         },
         {
             title: 'Notes',

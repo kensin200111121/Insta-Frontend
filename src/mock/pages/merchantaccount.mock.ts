@@ -10,10 +10,12 @@ const dataSource : MerchantAccountItem[] = [
         monthly_volume: '000 000 000',
         MID: '000',
         descriptor: '000',
+        binNum: '',
+        agentNum: '',
+        chainNum: '',
+        storeNum: '',
+        terminalNum: '',
         terminalId: '',
-        debit_rate: 10,
-        credit_rate: 10,
-        transaction_fee: 0,
         note: ''
     },
     {
@@ -24,9 +26,11 @@ const dataSource : MerchantAccountItem[] = [
         MID: '000',
         descriptor: '000',
         terminalId: '',
-        debit_rate: 20,
-        credit_rate: 20,
-        transaction_fee: 0,
+        binNum: '',
+        agentNum: '',
+        chainNum: '',
+        storeNum: '',
+        terminalNum: '',
         note: 'This is a sample note'
     },
     {
@@ -37,9 +41,11 @@ const dataSource : MerchantAccountItem[] = [
         MID: '000',
         descriptor: '000',
         terminalId: '',
-        debit_rate: 30,
-        credit_rate: 30,
-        transaction_fee: 10,
+        binNum: '',
+        agentNum: '',
+        chainNum: '',
+        storeNum: '',
+        terminalNum: '',
         note: ''
     },
     {
@@ -50,9 +56,11 @@ const dataSource : MerchantAccountItem[] = [
         MID: '000',
         descriptor: '000',
         terminalId: '',
-        debit_rate: 40,
-        credit_rate: 40,
-        transaction_fee: 10,
+        binNum: '',
+        agentNum: '',
+        chainNum: '',
+        storeNum: '',
+        terminalNum: '',
         note: 'This is a sample note'
     }
 ];

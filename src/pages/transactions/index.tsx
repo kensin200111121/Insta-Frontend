@@ -13,7 +13,7 @@ import { MyButton, MyDatePicker, MyInput, MyPage, MySelect } from '@/components/
 import MyTable from '@/components/core/table';
 import ConfirmRefundFormDialog from '@/components/dialogs/confirm-refund';
 import InputRefundFromDialog from '@/components/dialogs/confirm-refund/InputRefund';
-import { cardTypeList, transactionStatusList, transactionStatusOptions, transactionTypeColors, transactionTypeOptions } from '@/patterns/selectOptions';
+import { cardTypeList, transactionStatusList, transactionStatusOptions, transactionTypeColors, transactionTypeOptions, transactionTypeSelectOptions } from '@/patterns/selectOptions';
 import exportToExcel from '@/utils/exportToExcel';
 import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 
@@ -21,6 +21,7 @@ import { CreateRefundAsync, GetTransactionsAsync } from './store/action';
 import { USER_ROLE } from '@/interface/user/login';
 import { TablePaginationConfig } from 'antd';
 import { GetLocationsAsync } from '../locations/store/action';
+import { apiGetTransactions } from '@/api/pages/transaction.api';
 
 const TransactionPage: FC = () => {
   const dispatch = useDispatch();
@@ -71,18 +72,23 @@ const TransactionPage: FC = () => {
     }
   };
 
-  const handleExport = () => {
-    exportToExcel(transactions, columns, 'Transactions');
+  const handleExport = async () => {
+    const { result, status } = await apiGetTransactions({filters: {...filters, storeFilter: stores.includes('all') ? [] : stores}});
+    if(status){
+      exportToExcel(result.data, columns, 'Transactions');
+    }else{
+      console.log('error in export');
+    }
   };
 
   const columns = [
     {
       title: 'Date',
-      render: (val: any, record: TransactionItem) => moment(record.created_at).format('MM/DD/YYYY'),
+      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY'),
     },
     {
       title: 'Time',
-      render: (val: any, record: TransactionItem) => moment(record.created_at).format('hh:mm:ss A'),
+      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, moment.tz.guess()).format('hh:mm:ss A'),
     },
     ...(role === USER_ROLE.admin || role === USER_ROLE.agent ? [
       {
@@ -318,14 +324,16 @@ const TransactionPage: FC = () => {
             />
           }
           {role >= USER_ROLE.admin && 
-            <MySelect
-              className="select-secondary"
-              options={transactionTypeOptions}
-              placeholder="Sort by TYpe"
-              defaultValue={-1}
-              popupClassName="select-dropdown-secondary"
-              onChange={val => handleFilterChange('type', val)}
-            />
+            <div style={{width: '160px'}}>
+              <MySelect
+                className="select-secondary w-full"
+                options={transactionTypeSelectOptions}
+                placeholder="Sort by TYpe"
+                defaultValue={-1}
+                popupClassName="select-dropdown-secondary"
+                onChange={val => handleFilterChange('type', val)}
+              />
+            </div>
           }
         </>
       }

@@ -8,7 +8,7 @@ export interface FundingReportItem {
     ACH_ID: string;
     amount: number;
     errorCount: number;
-    status: number;
+    status: string;
     note?: string;
     report?: {
         name?: string;

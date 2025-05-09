@@ -389,9 +389,15 @@ a {
   input,
   .ant-btn,
   .ant-select-selection-placeholder,
-  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector,
-  .ant-select-multiple:not(.ant-select-customize-input) .ant-select-selector {
+  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
     height: 33px;
+    border-radius: 15px;
+  }
+
+  .ant-select-multiple:not(.ant-select-customize-input) .ant-select-selector {
+    overflow-y: show;
+    height: max-content;
+    min-height: 33px;
     border-radius: 15px;
   }
 
@@ -540,6 +546,10 @@ a.link:hover {
 
 .highlight-row {
   background-color: #FEF3D1;
+}
+
+.highlight-row-red {
+  background-color: #FE7551;
 }
 
 .select-primary.ant-select-single:not(.ant-select-customize-input) .ant-select-selector {

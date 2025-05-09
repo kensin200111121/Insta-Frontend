@@ -20,6 +20,7 @@ import { TransactionItem } from '@/interface/data/transaction.interface';
 import { GetTransactionsAsync } from '../transactions/store/action';
 import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 import { TablePaginationConfig } from 'antd';
+import { apiGetRefunds } from '@/api/pages/refund.api';
 
 const RefundPage: FC = () => {
   const dispatch = useDispatch();
@@ -95,8 +96,13 @@ const RefundPage: FC = () => {
     }
   };
 
-  const handleExport = () => {
-    exportToExcel(refunds, columns, 'Refunds');
+  const handleExport = async () => {
+    const { result, status } = await apiGetRefunds({filters});
+    if(status){
+      exportToExcel(result.data, columns, 'Refunds');
+    }else{
+      console.log('error in export');
+    }
   };
 
   const columns = [
@@ -104,19 +110,19 @@ const RefundPage: FC = () => {
       title: 'Original Tx Date',
       dataIndex: 'created_at',
       key: 'created_at',
-      render: (val: Date) => (<div style={{minWidth: '110px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '110px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')
     },
     {
       title: 'Refund Date',
       dataIndex: 'refunded_at',
       key: 'refunded_at',
-      render: (val: Date) => (<div style={{minWidth: '80px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')
     },
     {
       title: 'Time',
-      render: (val: any, record: RefundItem) => moment(record.refunded_at).format('hh:mm:ss A'),
+      render: (val: any, record: RefundItem) => moment.tz(record.refunded_at, moment.tz.guess()).format('hh:mm:ss A'),
     },
     ...(role === USER_ROLE.admin ? [
       {

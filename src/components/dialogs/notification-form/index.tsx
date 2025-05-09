@@ -25,9 +25,10 @@ const NotificationForm: React.FC<DialogContentProps<LocationItem[], Notification
   useEffect(() => {
     dispatch(GetAgentsAsync());
   }, []);
-  
+
   useEffect(() => {
     form.resetFields();
+    SetIncludeAgents(false);
   }, [data]);
 
   const handleOK = async () => {

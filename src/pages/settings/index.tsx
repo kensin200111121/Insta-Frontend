@@ -79,7 +79,7 @@ const SettingPage: FC = () => {
     },
     {
       title: 'Email',
-      dataIndex: 'Email',
+      dataIndex: 'email',
       key: 'email'
     },
     {

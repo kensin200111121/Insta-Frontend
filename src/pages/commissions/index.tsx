@@ -16,10 +16,13 @@ import StatusCell from '../support_tickets/StatusCell';
 import moment from 'moment';
 import { getPriceNumber } from '@/utils/getFormatedNumber';
 import { TablePaginationConfig } from 'antd';
+import { apiGetCommissions } from '@/api/pages/commission.api';
+import { USER_ROLE } from '@/interface/user/login';
 
 const CommissionPage: FC = () => {
 
     const dispatch = useDispatch();
+    const { role } = useSelector(state => state.user);
     const { commissions, total } = useSelector(state => state.commission);
     const [ dateRange, setDateRange ] = useState<string[]>([]);
     const [ pagination, setPagination ] = useState<TablePaginationConfig>({});
@@ -43,12 +46,19 @@ const CommissionPage: FC = () => {
     };
 
     const columns = [
+        ...(role === USER_ROLE.admin ? [{
+            title: 'Agent Name',
+            dataIndex: 'agentName',
+            key: 'agentName',
+            render: (val: string) => (<div style={{minWidth: '90px'}}>{val}</div>),
+            renderExport: (val: string) => val,
+        }] : []),
         {
             title: 'Commission Period',
             dataIndex: 'createdAt',
             key: 'createdAt',
-            render: (val: Date, record: CommissionItem) => (<div style={{minWidth: '100px'}}>{`${moment(val).format('MMM Do H')} - ${record.endedAt ? moment(record.endedAt).format('MMM Do H') : ''}`}</div>),
-            renderExport: (val: Date, record: CommissionItem) => (`${moment(val).format('MMM Do H')} - ${record.endedAt ? moment(record.endedAt).format('MMM Do H') : ''}`)
+            render: (val: Date, record: CommissionItem) => (<div style={{minWidth: '130px'}}>{`${moment.tz(val, moment.tz.guess()).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, moment.tz.guess()).format('MMM Do H') : ''}`}</div>),
+            renderExport: (val: Date, record: CommissionItem) => (`${moment.tz(val, moment.tz.guess()).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, moment.tz.guess()).format('MMM Do H') : ''}`)
             // render: (val: Date) => (<div style={{minWidth: '100px'}}>{`${moment(val).startOf('isoWeek').format('MMM Do')} - ${moment(val).startOf('isoWeek').add(6, 'days').format('MMM Do')}`}</div>),
             // renderExport: (val: Date) => (`${moment(val).startOf('isoWeek').format('MMM Do')} - ${moment(val).startOf('isoWeek').add(6, 'days').format('MMM Do')}`)
         },
@@ -56,18 +66,8 @@ const CommissionPage: FC = () => {
             title: 'Funding Date',
             dataIndex: 'fundedAt',
             key: 'fundedAt',
-            render: (val: Date) => (<div style={{minWidth: '90px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-            renderExport: (val: Date) => moment(val).format('MM/DD/YYYY'),
-        },
-        {
-            title: 'Location Name',
-            render: (val: any, record: CommissionItem) => (<div style={{minWidth: '100px'}}>{record.store?.name}</div>),
-            renderExport: (val: any, record: CommissionItem) => record.store?.name
-        },
-        {
-            title: 'DBA Name',
-            render: (val: any, record: CommissionItem) => (<div style={{minWidth: '70px'}}>{record.store?.dbaName}</div>),
-            renderExport: (val: any, record: CommissionItem) => record.store?.dbaName
+            render: (val: Date) => (<div style={{minWidth: '90px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
+            renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY'),
         },
         {
             title: 'Gross Transaction Amount',
@@ -85,10 +85,10 @@ const CommissionPage: FC = () => {
         },
         {
             title: 'Last 4 of Bank',
-            dataIndex: 'bankAccount',
-            key: 'bankAccount',
-            render: (val: string) => (<div style={{minWidth: '100px'}}>{val.length >= 4 ? val.slice(-4) : ''}</div>),
-            renderExport: (val: string) => (val.length >= 4 ? val.slice(-4) : '')
+            dataIndex: 'bank',
+            key: 'bank',
+            render: (val: any) => (<div style={{minWidth: '100px'}}>{val.accountNumber?.length >= 4 ? val.accountNumber.slice(-4) : ''}</div>),
+            renderExport: (val: any) => (val.accountNumber?.length >= 4 ? val.accountNumber.slice(-4) : '')
         },
         {
             title: 'Commission Amount',
@@ -102,7 +102,7 @@ const CommissionPage: FC = () => {
             dataIndex: 'status',
             key: 'status',
             render: (val: number, record: CommissionItem) => (
-                val == 0 ? (
+                val == 0 && role === USER_ROLE.admin ? (
                     <StatusCell<number>
                         recordId={record._id || ''}
                         status={val}
@@ -110,6 +110,7 @@ const CommissionPage: FC = () => {
                         options={commissionStatusOptions}
                         colors={commissionStatusColors}
                         onChange={handleStatusChange}
+                        disabled={false}
                     />
                 ) : (
                     <div className={`text-${commissionStatusColors[val]}`} style={{minWidth: '100px'}}>
@@ -135,9 +136,14 @@ const CommissionPage: FC = () => {
         },
     ];
 
-    const handleExport = () => {
-        exportToExcel(commissions, columns, 'Commissions');
-    }
+    const handleExport = async () => {
+        const { result, status } = await apiGetCommissions({filters});
+        if(status){
+            exportToExcel(result.data, columns, 'Commissions');
+        }else{
+            console.log('error in export');
+        }
+    };
 
     const handleStatusChange = (_id: string, status: number) => {
         const commission = commissions.find(d => d._id == _id);

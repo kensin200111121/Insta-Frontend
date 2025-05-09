@@ -24,6 +24,8 @@ import MerchantAccountPage from '@/pages/merchant_accounts';
 import AgentPage from '@/pages/agents';
 import EnterprisePage from '@/pages/enterprises';
 import CommissionPage from '@/pages/commissions';
+import ReportPage from '@/pages/reports';
+import NotProcessedReportPage from '@/pages/not_processed_reports';
 
 const NotFound = lazy(() => import(/* webpackChunkName: "404'"*/ '@/pages/404'));
 const Documentation = lazy(() => import(/* webpackChunkName: "404'"*/ '@/pages/doucumentation'));
@@ -81,12 +83,20 @@ const routeList: RouteObject[] = [
         element: <WrapperRouteComponent element={<RefundPage />} titleId="title.refund" />,
       },
       {
+        path: 'reports',
+        element: <WrapperRouteComponent element={<ReportPage />} titleId="title.report" />,
+      },
+      {
         path: 'support_tickets',
         element: <WrapperRouteComponent element={<SupportTicketPage />} titleId="title.support_ticket" />,
       },
       {
         path: 'locations',
         element: <WrapperRouteComponent element={<LocationPage />} titleId="title.location" />,
+      },
+      {
+        path: 'not_processed_reports',
+        element: <WrapperRouteComponent element={<NotProcessedReportPage />} titleId="title.not_processed_report" />,
       },
       {
         path: 'funding_reports',

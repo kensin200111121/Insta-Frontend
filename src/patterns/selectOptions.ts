@@ -133,6 +133,25 @@ export const transactionTypeOptions : SelectOption<number>[] = [
   }
 ];
 
+export const transactionTypeSelectOptions : SelectOption<number>[] = [
+  {
+    value: -1,
+    label: 'All'
+  },
+  {
+    value: 0,
+    label: 'Transactions'
+  },
+  {
+    value: 1,
+    label: 'Refunds'
+  },
+  {
+    value: 2,
+    label: 'Chargebacks'
+  }
+];
+
 export const chargebackStatusColors : Record<string, string> = {
   pending: 'default',
   lost: 'danger',

@@ -9,9 +9,10 @@ interface StatusCellProps<T extends string | number>{
     colors?: Record<string, string>;
     minWidth?: number;
     onChange?: (recordId: string, status: T) => boolean|void;
+    disabled: boolean;
 }
 
-const StatusCell = <T extends string | number>({recordId, status, minWidth, options, colors, onChange}: StatusCellProps<T>) => {
+const StatusCell = <T extends string | number>({recordId, status, minWidth, options, colors, disabled, onChange}: StatusCellProps<T>) => {
 
     const [isEditting, setIsEditting] = useState(false);
     const [curStatus, setCurStatus] = useState<T>(status);
@@ -30,7 +31,7 @@ const StatusCell = <T extends string | number>({recordId, status, minWidth, opti
     }, [curStatus]);
 
     return (
-        <div className='w-full h-full' style={minWidth ? {minWidth: `${minWidth}px`} : {}} onClick={() => setIsEditting(true)}>
+        <div className='w-full h-full' style={minWidth ? {minWidth: `${minWidth}px`} : {}} onClick={disabled ? () => {} : () => setIsEditting(true)}>
             { isEditting ? (
                 <MySelect
                     className='w-full'

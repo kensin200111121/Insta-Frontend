@@ -17,7 +17,8 @@ const salesData: string[][] = [
     moment(`${monthYear}-${i + 1}`, 'YYYY-MM-D').format('Do')),
   [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ],
   Array.from({ length: moment().subtract(1, 'months').daysInMonth() }, (_, i) => 
-    moment(`${lastMonthYear}-${i + 1}`, 'YYYY-MM-D').format('Do'))
+    moment(`${lastMonthYear}-${i + 1}`, 'YYYY-MM-D').format('Do')),
+  ['date']
 ];
 
 type SalesTooltipProps = {
@@ -44,9 +45,10 @@ const SalesTooltip:FC<SalesTooltipProps> = ({label, value}) => {
 
 type SalesChartProps = {
   onTabChange?: (curTabKey: string) => void;
+  dateRange: string[]
 };
 
-const SalesChart: FC<SalesChartProps> = ({ onTabChange }) => {
+const SalesChart: FC<SalesChartProps> = ({ onTabChange, dateRange }) => {
 
   const [total, setTotal] = useState(0);
   const [curTab, setCurTab] = useState(0);
@@ -59,6 +61,7 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange }) => {
     { key: 'mtd', label: 'MTD' },
     { key: 'lastweek', label: 'Last Week' },
     { key: 'lastmonth', label: 'Last Month' },
+    { key: 'custom', label: 'Custom' },
   ];
 
   const handleTabClick = (index: number) => {
@@ -66,10 +69,26 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange }) => {
     onTabChange && onTabChange(tabs[index].key);
   }
   
-
   useEffect(() => {
     handleTabClick(0);
   }, []);
+
+  useEffect(() => {
+    if(dateRange.length){
+      const start = moment(dateRange[0], 'YYYY-MM-DD');
+      const end = moment(dateRange[1], 'YYYY-MM-DD');
+      const dates = [];
+    
+      let current = start.clone();
+      while (current.isSameOrBefore(end)) {
+        dates.push(current.format('YYYY-MM-DD'));
+        current.add(1, 'day');
+      }
+      salesData[5] = dates;
+    }else{
+      salesData[5] = ['date'];
+    }
+  }, [dateRange])
   
   useEffect(() => {
     const temp = salesData[curTab].map(label => ({ name: label, sales: 0}))
@@ -154,7 +173,8 @@ const chartToolbar = css`
   }
 
   .ant-btn.btn-active{
-    background-color: #FFB03B;
+    background-color: #30260B;
+    border-color: #30260B;
   }
 }
 `;

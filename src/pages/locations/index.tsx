@@ -19,6 +19,7 @@ import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 import type { NoteLocationFormData } from '@/components/dialogs/note-location';
 import NoteLocationFormDialog from '@/components/dialogs/note-location';
 import { GetLocationStatisticsAsync } from './store/action';
+import TerminallistFormDialog from '@/components/dialogs/terminallist-form';
 
 const LocationPage: FC = () => {
   const dispatch = useDispatch();
@@ -27,6 +28,7 @@ const LocationPage: FC = () => {
   const dialogRefCreate = useRef<DialogMethod<LocationCreateFormItem>>(null);
   const dialogRefEdit = useRef<DialogMethod<LocationCreateFormItem>>(null);
   const dialogRefNote = useRef<DialogMethod<NoteLocationFormData>>(null);
+  const terminalListDialogRef = useRef<DialogMethod<string>>(null);
 
   useEffect(() => {
     dispatch(GetLocationStatisticsAsync());
@@ -74,7 +76,7 @@ const LocationPage: FC = () => {
       userMembers: [],
       reportUsers: [],
       terminals: [],
-      merchant: '',
+      merchants: [],
       tipAmount1: '0',
       tipAmount2: '0',
       tipAmount3: '0',
@@ -91,7 +93,9 @@ const LocationPage: FC = () => {
       secondPerTransactionAmount: '',
       subAgent: '',
       subCommissionRatesAmount: '',
-      subPerTransactionAmount: ''
+      subPerTransactionAmount: '',
+      live: false,
+      timezone: ''
     });
   };
 
@@ -158,7 +162,9 @@ const LocationPage: FC = () => {
           tipAmount4: (tipMode === 'fixed' ? tipAmounts[0] || 0 : 0) + '',
           tipAmount5: (tipMode === 'fixed' ? tipAmounts[1] || 0 : 0) + '',
           tipAmount6: (tipMode === 'fixed' ? tipAmounts[2] || 0 : 0) + '',
-          merchant: res.result.data.merchant,
+          merchants: res.result.data.merchants,
+          live: res.result.data.live,
+          timezone: res.result.data.timezone,
           agent: firstAgent?.agent ?? '',
           enterprise: res.result.data.enterprise,
           commissionRatesAmount: firstAgent?.commissionRatesAmount ?? '',
@@ -180,6 +186,10 @@ const LocationPage: FC = () => {
       notes: val,
       ownershipProof: record.ownershipProof,
     });
+  };
+
+  const onTerminalListOpen = (store_id: string) => {
+      terminalListDialogRef.current?.open(store_id);
   };
 
   const onLoginStore = (val: string, record: LocationListItem) => {};
@@ -324,6 +334,11 @@ const LocationPage: FC = () => {
       },
       renderExport: (val: string) => val
     },
+    {
+      title: '',
+      export: false,
+      render: (val:any, record:LocationListItem) => (<a onClick={() => onTerminalListOpen(record._id)}>See Terminals</a>)
+    },
     ...(role === USER_ROLE.admin ? [
       {
         title: 'Log in as Store',
@@ -392,6 +407,7 @@ const LocationPage: FC = () => {
         ref={dialogRefNote}
         title="Notes for Location"
       ></NoteLocationFormDialog>
+      <TerminallistFormDialog onClose={() => {}} ref={terminalListDialogRef} title="Terminals List" />
     </MyPage>
   );
 };

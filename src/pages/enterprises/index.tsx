@@ -45,14 +45,15 @@ const EnterprisePage: FC = () => {
         }
     };
 
-    const columns: ColumnType<EnterpriseItem>[] = [
+    const columns = [
         {
             title: 'Enterprise Name',
             dataIndex: 'name',
             key: 'name',
             render: (val: any, record: EnterpriseItem) => {
                 return <div style={{ minWidth: '130px' }}><a onClick={() => onCreateOpen(record._id)}>{record.name}</a></div>;
-            }
+            },
+            renderExport: (val: string) => val
         },
         {
             title: 'Enterprise Username',
@@ -60,7 +61,8 @@ const EnterprisePage: FC = () => {
             key: 'loginInfo.name',
             render: (val: any, record: EnterpriseItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.loginInfo.name}</div>;
-            }
+            },
+            renderExport: (val: string, record: EnterpriseItem) => record.loginInfo.name
         },
         {
             title: 'Enterprise Password',
@@ -68,16 +70,16 @@ const EnterprisePage: FC = () => {
             key: 'loginInfo.password',
             render: (val: any, record: EnterpriseItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.loginInfo.password}</div>;
-            }
+            },
+            renderExport: (val: string, record: EnterpriseItem) => record.loginInfo.password
         },
         {
             title: '',
-            align: 'center',
-            render: (val: any, record: EnterpriseItem) => (<div style={{minWidth: '20px'}}>
+            width: 30,
+            render: (val: any, record: EnterpriseItem) => (
                 <button css={css`border-width: 0px; background: transparent; &:hover{cursor: pointer; background-color: #F3F3F3;}`} onClick={() => onRemoveEnterpriseOpen(record?._id || '')}>
                     <CloseOutlined className='text-danger' />
-                </button>
-            </div>)
+                </button>)
         },
     ];    
 

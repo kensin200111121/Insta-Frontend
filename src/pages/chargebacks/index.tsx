@@ -25,6 +25,7 @@ import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 import { GetChargebacksAsync, SetChargebackStatusAsync } from './store/action';
 import StatusCell from '../support_tickets/StatusCell';
 import { TablePaginationConfig } from 'antd';
+import { apiGetChargebacks } from '@/api/pages/chargeback.api';
 
 const ChargebackPage: FC = () => {
   const dispatch = useDispatch();
@@ -97,19 +98,24 @@ const ChargebackPage: FC = () => {
   const onClose = () => {
   };
 
-  const handleExport = () => {
-    exportToExcel(chargebacks, columns, 'Chargebacks');
+  const handleExport = async () => {
+    const { result, status } = await apiGetChargebacks({filters});
+    if(status){
+      exportToExcel(result.data, columns, 'Chargebacks');
+    }else{
+      console.log('error in export');
+    }
   };
 
   const columns = [
     {
       title: 'Date of Original TX',
-      render: (val: any, record: ChargebackItem) => (<div style={{minWidth: '130px'}}>{moment(record.created_at).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: any, record: ChargebackItem) => moment(record.created_at).format('MM/DD/YYYY')
+      render: (val: any, record: ChargebackItem) => (<div style={{minWidth: '130px'}}>{moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: any, record: ChargebackItem) => moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY')
     },
     {
       title: 'Time',
-      render: (val: any, record: ChargebackItem) => moment(record.created_at).format('HH:MM:SS'),
+      render: (val: any, record: ChargebackItem) => moment.tz(record.created_at, moment.tz.guess()).format('HH:MM:SS'),
     },
     ...(role === USER_ROLE.admin ? [
       {
@@ -182,6 +188,7 @@ const ChargebackPage: FC = () => {
             options={chargebackStatusOptions}
             colors={chargebackStatusColors}
             onChange={handleStatusChange}
+            disabled={role == USER_ROLE.user}
           />
         ) : (
           <div className={`text-${chargebackStatusColors[val]}`} style={{minWidth: '100px'}}>

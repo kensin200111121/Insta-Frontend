@@ -69,10 +69,15 @@ export const GetStatisticsAsync = createAsyncAction<chartRequest, boolean>((data
           statistics: result
         }),
       );
-
+      
       return true;
     }
-
+    
+    dispatch(
+      setHomepageState({
+        statistics: undefined
+      }),
+    );
     return false;
   };
 });
@@ -91,6 +96,11 @@ export const GetSalesAsync = createAsyncAction<chartRequest, boolean>((data) => 
       return true;
     }
 
+    dispatch(
+      setHomepageState({
+        sales: []
+      }),
+    );
     return false;
   };
 });

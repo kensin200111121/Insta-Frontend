@@ -14,6 +14,8 @@ import settingReducer from '@/pages/settings/store/reducer';
 import supportTicketReducer from '@/pages/support_tickets/store/reducer';
 import terminalReducer from '@/pages/terminals/store/reducer';
 import transactionReducer from '@/pages/transactions/store/reducer';
+import reportReducer from '@/pages/reports/store/reducer';
+import notProcessedReportReducer from '@/pages/not_processed_reports/store/reducer';
 
 import globalReducer from './global.store';
 import tagsViewReducer from './tags-view.store';
@@ -37,6 +39,8 @@ const rootReducer = combineReducers({
   agent: agentReducer,
   commission: commissionReducer,
   enterprise: enterpriseReducer,
+  report: reportReducer,
+  notProcessed: notProcessedReportReducer
 });
 
 export default rootReducer;

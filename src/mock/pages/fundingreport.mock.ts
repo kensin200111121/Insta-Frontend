@@ -10,7 +10,7 @@ const dataSource : FundingReportItem[] = [
         ACH_ID: '000 000 000',
         amount: 112112,
         errorCount: 0,
-        status: 1,
+        status: "funded",
         store: {
             _id: `67ab86556a83c56893ec388b`,
             name: `Max Store`,

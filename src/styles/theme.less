@@ -5,11 +5,18 @@
 [data-theme="light"] {
   background-color: @light-1;
 
-  .bg-1, .bg-2 {
+  .bg-1,
+  .bg-2 {
     background-color: @light-1;
   }
+
   .ant-layout-sider {
     background-color: @light-1;
+    height: 100vh;
+    overflow: auto;
+    width: 210px;
+    min-width: 210px;
+    max-width: 210px;
   }
 
   .text-1 {
@@ -17,7 +24,7 @@
   }
 
   .text-2 {
-    color: rgba(0,0,0,.85);
+    color: rgba(0, 0, 0, .85);
   }
 }
 
@@ -25,6 +32,7 @@
   .bg-1 {
     background-color: @dark-1;
   }
+
   .bg-2 {
     background-color: @dark-2;
   }
@@ -34,6 +42,6 @@
   }
 
   .text-2 {
-    color: rgba(255,255,255,.65);
+    color: rgba(255, 255, 255, .65);
   }
 }

@@ -2,7 +2,7 @@ import withDialog from '@/patterns/hoc/withDialog';
 import { DialogContentProps } from '@/types/props/dialog.type';
 import React, { useEffect } from 'react';
 import { Row, Form, Col } from 'antd';
-import { MyButton, MyInput, MyInputNumber } from '@/components/basic';
+import { MyButton, MyInput } from '@/components/basic';
 import { css } from '@emotion/react';
 
 export type MerchantAccountFormData = {
@@ -11,9 +11,11 @@ export type MerchantAccountFormData = {
     monthly_volume: string;
     MID: string;
     descriptor: string;
-    debit_rate: number;
-    credit_rate: number;
-    transaction_fee: number;
+    binNum: string;
+    agentNum: string;
+    chainNum: string;
+    storeNum: string;
+    terminalNum: string;
     terminalId: string;
     note?: string;
 }
@@ -78,34 +80,46 @@ const MerchantAccountForm: React.FC<DialogContentProps<any, MerchantAccountFormD
                     <MyInput placeholder='MID #' />
                 </Form.Item>
                 <Form.Item
-                name="credit_rate"
-                rules={[{ required: true, message: 'Credit Card Rate is invalidate!' }]}
+                name="binNum"
+                rules={[{ required: true, message: 'BIN # is invalidate!' }]}
                 >
-                    <MyInputNumber className='w-full' placeholder='Credit Card Rate' min={0} max={100} addonAfter='%' />
+                    <MyInput placeholder='BIN #' />
                 </Form.Item>
                 <Form.Item
-                name="debit_rate"
-                rules={[{ required: true, message: 'Debit Card Rate is invalidate!' }]}
+                name="agentNum"
+                rules={[{ required: true, message: 'Agent # is invalidate!' }]}
                 >
-                    <MyInputNumber className='w-full' placeholder='Debit Card Rate' min={0} max={100} addonAfter='%' />
+                    <MyInput placeholder='Agent #' />
                 </Form.Item>
                 <Form.Item
-                name="transaction_fee"
-                rules={[{ required: true, message: 'Transaction Fee is required!' }]}
+                name="chainNum"
+                rules={[{ required: true, message: 'Chain # is invalidate!' }]}
                 >
-                    <MyInputNumber className='w-full' placeholder='Transaction Fee' min={0} addonBefore='$' css={css`.ant-input-number-input{padding-left: 3px}`}/>
+                    <MyInput placeholder='Chain #' />
                 </Form.Item>
                 <Form.Item
-                name="descriptor"
-                rules={[{ required: true, message: 'Descriptor is invalidate!' }]}
+                name="storeNum"
+                rules={[{ required: true, message: 'Store # is invalidate!' }]}
                 >
-                    <MyInput placeholder='Descriptor' />
+                    <MyInput placeholder='Store #' />
+                </Form.Item>
+                <Form.Item
+                name="terminalNum"
+                rules={[{ required: true, message: 'Terminal # is invalidate!' }]}
+                >
+                    <MyInput placeholder='Terminal #' />
                 </Form.Item>
                 <Form.Item
                 name="terminalId"
                 rules={[{ required: true, message: 'Terminal ID is invalidate!' }]}
                 >
                     <MyInput placeholder='Terminal ID' />
+                </Form.Item>
+                <Form.Item
+                name="descriptor"
+                rules={[{ required: true, message: 'Descriptor is invalidate!' }]}
+                >
+                    <MyInput placeholder='Descriptor' />
                 </Form.Item>
                 <Form.Item
                 name="note"

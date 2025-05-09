@@ -105,7 +105,7 @@ const AgentPage: FC = () => {
           }
         });
     };
-    const columns: ColumnType<AgentItem>[] = [
+    const columns = [
         {
             title: 'Agent Company Name',
             dataIndex: 'agentInfo.agentCompanyName',
@@ -119,7 +119,8 @@ const AgentPage: FC = () => {
             >
                 {record.agentInfo.agentCompanyName}
             </a>
-            )
+            ),
+            renderExport: (val: string, record: AgentItem) => record.agentInfo.agentCompanyName
         },
         {
             title: 'Agent Name',
@@ -127,7 +128,8 @@ const AgentPage: FC = () => {
             key: 'agentInfo.agentName',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.agentInfo.agentName}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.agentInfo.agentName
         },
         {
             title: 'Agent Email',
@@ -135,7 +137,8 @@ const AgentPage: FC = () => {
             key: 'agentInfoagentEmail',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.agentInfo.agentEmail}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.agentInfo.agentEmail
         },
         {
             title: 'Agent Phone',
@@ -143,7 +146,8 @@ const AgentPage: FC = () => {
             key: 'agentInfoagentPhone',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.agentInfo.agentPhone}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.agentInfo.agentPhone
         },
         {
             title: 'Bank Name',
@@ -151,7 +155,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.name',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.bankInfo.name}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.name
         },
         {
             title: 'Name on Bank Account',
@@ -159,7 +164,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.bankName',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '150px' }}>{record.bankInfo.bankName}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.bankName
         },
         {
             title: 'Street',
@@ -167,7 +173,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.street',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.bankInfo.street}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.street
         },
         {
             title: 'City',
@@ -175,7 +182,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.city',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.bankInfo.city}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.city
         },
         {
             title: 'State',
@@ -183,7 +191,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.state',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '100px' }}>{record.bankInfo.state}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.state
         },
         {
             title: 'ZIP',
@@ -191,7 +200,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.zip',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '100px' }}>{record.bankInfo.zip}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.zip
         },
         {
             title: 'Routing Number',
@@ -199,7 +209,8 @@ const AgentPage: FC = () => {
             key: 'bankInfo.routingNumber',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.bankInfo.routingNumber}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.routingNumber
         },
         {
             title: 'Account Number',
@@ -207,13 +218,15 @@ const AgentPage: FC = () => {
             key: 'bankInfo.accountNumber',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.bankInfo.accountNumber}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.bankInfo.accountNumber
         },
         {
             title: 'Notes',
             dataIndex: 'notes',
             key: 'notes',
             render: (val: any, record: AgentItem) => (val?.length ? (<a onClick={() => onSeeNoteOpen(val)}>See Notes</a>) : (<MyButton onClick={() => {onNoteOpen(record._id)}}>Add Notes</MyButton>)),
+            renderExport: (val: string, record: AgentItem) => record.notes
         },
         {
             title: 'Agent Username',
@@ -221,7 +234,8 @@ const AgentPage: FC = () => {
             key: 'loginInfo.name',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.loginInfo.name}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.loginInfo.name
         },
         {
             title: 'Agent Password',
@@ -229,11 +243,11 @@ const AgentPage: FC = () => {
             key: 'loginInfo.password',
             render: (val: any, record: AgentItem) => {
                 return <div style={{ minWidth: '130px' }}>{record.loginInfo.password}</div>;
-            }
+            },
+            renderExport: (val: string, record: AgentItem) => record.loginInfo.password
         },
         {
             title: '',
-            align: 'center',
             render: (val: any, record: AgentItem) => (<div style={{minWidth: '20px'}}>
                 <button css={css`border-width: 0px; background: transparent; &:hover{cursor: pointer; background-color: #F3F3F3;}`} onClick={() => onRemoveAgentOpen(record?._id || '')}>
                     <CloseOutlined className='text-danger' />

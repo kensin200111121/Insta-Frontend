@@ -10,7 +10,7 @@ import type { DialogContentProps, DialogMethod } from '@/types/props/dialog.type
 import type { UploadChangeParam, UploadFile } from 'antd/es/upload';
 
 import { css } from '@emotion/react';
-import { Button, Checkbox, Col, Form, Input, message, Modal, Row, Upload } from 'antd';
+import { Button, Checkbox, Col, Form, Input, message, Modal, Row, Switch, Upload } from 'antd';
 import React, { useRef, useEffect, useState } from 'react';
 
 import { apiCreateLocation, apiUploadOwnershipProof } from '@/api/pages/location.api';
@@ -28,6 +28,7 @@ import { GetAgentsAsync } from '@/pages/agents/store/action';
 import { GetEnterprisesAsync } from '@/pages/enterprises/store/action';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import getFormatedNumber, { roundDown } from '@/utils/getFormatedNumber';
+import moment from 'moment-timezone';
 
 const hasPermission = (permission: Record<string, boolean>) => {
   let result = false;
@@ -48,7 +49,6 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
   const [usersForm] = Form.useForm();
   const [reportForm] = Form.useForm();
   const [storeId, setStoreId] = useState('');
-  const [descriptor, setDescriptor] = useState('');
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sameProfile, setSameProfile] = useState(false);
@@ -56,6 +56,7 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
   const [isReadOnlyAgentBuyRate, setIsReadOnlyAgentBuyRate] = useState(true);
   const [hasAnotherAgent, setHasAnotherAgent] = useState(false);
   const [showSubAgent, setShowSubAgent] = useState(false);
+  const [isLiveStore, setIsLiveStore] = useState(false);
 
   const dialogRefUserPermission = useRef<DialogMethod<UserPermissionFormData>>(null);
 
@@ -111,14 +112,15 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     setIsReadOnlyAgentBuyRate(true);
     setHasAnotherAgent(false);
     setShowSubAgent(false);
+    setMerchants([null]);
+    setDescriptors(['']);
+    setIsLiveStore(false);
     form.resetFields();
-    setDescriptor(merchant_accounts.find(d => d._id == data?.merchant)?.descriptor || '');
+    // setDescriptor(merchant_accounts.find(d => d._id == data?.merchant)?.descriptor || '');
   }, [data]);
 
   useEffect(() => {
-    if( !merchant_accounts || merchant_accounts.length == 0 ){
-      dispatch(GetMerchantAccountAsync());
-    }
+    dispatch(GetMerchantAccountAsync());
     dispatch(GetAgentsAsync());
     dispatch(GetEnterprisesAsync());
   }, []);
@@ -150,6 +152,8 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
       readOnly: false,
     },
   ]);
+  const [merchants, setMerchants] = useState<any[]>([null]);
+  const [descriptors, setDescriptors] = useState<string[]>(['']);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const [tipMode, setTipMode] = useState(String);
@@ -311,7 +315,6 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     );
   };
 
-
   const handleAddNewReport = async () => {
     const lastReport = reportUsers[reportUsers.length - 1];
     const nameExists = reportUsers.slice(0, -1).some(report => report.name === lastReport.name);
@@ -368,8 +371,17 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     );
   };
 
-  const handleMerchantSelect = (value: String) => {
-    setDescriptor(merchant_accounts.find(d => d._id == value)?.descriptor || '')
+  const handleMerchantSelect = (value: string|null, index: number) => {
+    if(merchants.includes(value)){
+      message.error('MID was alreay added.');
+      return;
+    }
+    const temp = [...descriptors];
+    temp[index] = merchant_accounts.find(d => d._id == value)?.descriptor || '';
+    setDescriptors(temp);
+    const mtemp = [...merchants];
+    mtemp[index] = value;
+    setMerchants(mtemp);
   }
   const handleAgentSelect = (value: String) => {
     form.setFieldValue('commissionRatesAmount', agents.find(d => d._id == value)?.commissionRate ?? 0)
@@ -443,6 +455,19 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
         return false;
     });
 
+    if(merchants.length === 0){
+      message.error('MID information is required.');
+      return false;
+    }else if(merchants[merchants.length - 1] === null){
+      message.error('Please enter MID information or delete it.');
+      return false;
+    }
+
+    if (!(merchants.filter(e => !!e))?.length) {
+      message.error(`Merchant account is required. Please select the valid MID!`);
+      return;
+    }
+
     if (userHasErrors || reportHasErrors) {
         return;
     }
@@ -497,15 +522,18 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     try {
       const values = await form.validateFields();
 
+      const merchantIds = (merchants || []).filter((e) => !!e);
       data = {
         ...data,
         ...values,
+        merchants: merchantIds,
         isAutoBatchTime: autoTime,
         noTip: noTipConfirm || noTip,
         noConvenienceFee: noConvenienceFeeConfirm || noConvenienceFee,
         userMembers: [...userMembers],
         reportUsers: [...reportUsers],
-        terminals: []
+        terminals: [],
+        live: isLiveStore
       };
 
       apiCreateLocation(data)
@@ -617,6 +645,13 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     setReportUsers(updatedReports);
   };
 
+  const handleDeleteMerchant = (index: number) => {
+    const updatedMerchants = merchants.filter((_, i) => i !== index);
+    setMerchants(updatedMerchants);
+    const updatedDescriptors = descriptors.filter((_, i) => i !== index);
+    setDescriptors(updatedDescriptors);
+  };
+
   const onUserPermissionClose = (permissions: any) => {
     if (selectedIndex !== null) {
       const updatedMembers = [...userMembers];
@@ -659,6 +694,18 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
     setConvenienceFeeModes({percentageFeeMode: false, fixedFeeMode: false});
     setNoConvenienceFee(prev => !prev);
   }
+
+  const handleAddNewMerchant = async () => {
+    if(merchants.length){
+      const lastMember = merchants[merchants.length - 1];
+      if (lastMember === null) {
+        message.error('MID is required!');
+        return;
+      }
+    }
+    setMerchants([...merchants, null]);
+    setDescriptors([...descriptors, '']);
+  };
 
   return (
     <div css={styles}>
@@ -1360,22 +1407,35 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
         autoComplete="off"
         className="setting-form"
       >
-        <Row className='subtitle-row'><Col><h3>MID</h3></Col></Row>
-        <Row gutter={16} className='nested-row'>
-          <Col span={6}>
-            <Form.Item name="merchant" rules={[{ required: true, message: 'MID is required!' }]}>
+        <Row gutter={16}>
+          <Col span={6}><h3>MID</h3></Col>
+          <Col span={4}>
+            <Button className={`w-full btn-green`} onClick={handleAddNewMerchant}>
+              Add New MID
+            </Button>
+          </Col>
+        </Row>
+        { merchants.map((merchant, index) => 
+          (<Row gutter={16}>
+            <Col span={6}>
               <MySelect
                 placeholder="Select Merchant Account"
                 className='w-full'
+                value={merchant}
                 options={merchant_accounts.map(d => ({label: d.iso_name, value: d._id}))}
-                onSelect={handleMerchantSelect}
+                onSelect={(val: string|null) => handleMerchantSelect(val, index)}
               />
-            </Form.Item>
-          </Col>
-          <Col span={5}>
-            <Input placeholder="Descriptor" className="w-full" disabled value={descriptor} />
-          </Col>
-        </Row>
+            </Col>
+            <Col span={4}>
+              <Input placeholder="Descriptor" className="w-full" disabled value={descriptors[index]} />
+            </Col>
+            <Col span={3}>
+              <Button className="btn-red w-full" onClick={() => handleDeleteMerchant(index)}>
+                Delete
+              </Button>
+            </Col>
+          </Row>)
+        )}
 
         <Row className='subtitle-row'><Col><h3>Enterprise Name</h3></Col></Row>
         <Row gutter={18} className='nested-row'>
@@ -1386,6 +1446,26 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
                 options={enterprises.map(d => ({label: d.name, value: d._id}))}
                 placeholder="Enterprise Name"
                 popupClassName="select-dropdown-normal"
+              />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Row className='subtitle-row' gutter={16}>
+          <Col span={3}><h3>Live</h3></Col>
+          <Col span={1}>
+            <Form.Item name="live" >
+              <Switch checked={isLiveStore} onChange={() => setIsLiveStore(!isLiveStore)} />
+            </Form.Item>
+          </Col>
+          <Col span={1}></Col>
+          <Col span={3}><h3>Timezone</h3></Col>
+          <Col span={5}>
+            <Form.Item name="timezone" rules={[{ required: true, message: 'Timezone is required!' }]}>
+              <MySelect
+                className="w-full"
+                placeholder='Timezone'
+                options={moment.tz.names().map(d => ({label: d, value: d}))}
               />
             </Form.Item>
           </Col>

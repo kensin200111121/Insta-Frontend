@@ -7,7 +7,7 @@ import 'moment-timezone';
 import { CraeteNotificationAsync, GetNotificationsAsync, GetSalesAsync, GetStatisticsAsync, RemoveNotificationAsync } from './store/action';
 import './index.less';
 import SalesChart from './SalesChart';
-import { MyButton, MySelect } from '@/components/basic';
+import { MyButton, MyDatePicker, MySelect } from '@/components/basic';
 import MyTable from '@/components/core/table';
 import { NotificationItem, statisticsForAdmin, statisticsForStore } from '@/interface/data/home.interface';
 import { ColumnType } from 'antd/es/table';
@@ -28,6 +28,8 @@ const HomePage: FC = () => {
     const { role } = useSelector(state => state.user);
     const [ stores, setStores ] = useState<string[]>(['all']);
     const [ mode, setMode ] = useState('');
+    const [ dateRange, setDateRange ] = useState<string[]>([]);
+    const [ currentRange, setCurrentRange ] = useState<any[]>([]);
 
     useEffect(() => {
         dispatch(GetLocationsAsync());
@@ -59,10 +61,10 @@ const HomePage: FC = () => {
 
     useEffect(() => {
         if(mode != ''){
-            dispatch(GetSalesAsync({mode, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
-            dispatch(GetStatisticsAsync({mode, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
+            dispatch(GetSalesAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
+            dispatch(GetStatisticsAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
         }
-    }, [stores, mode]);
+    }, [stores, mode, dateRange]);
 
     const handleTabChange = (key: string) => {
         setMode(key);
@@ -76,6 +78,15 @@ const HomePage: FC = () => {
         }
     }
 
+    const handleChangeDateRange = (range1: any, range2: string[]) => {
+        if(range2?.[0].length && range2?.[1].length){
+            setCurrentRange(range1);
+            setDateRange(range2);
+        }else{
+            setCurrentRange([]);
+            setDateRange([]);
+        }
+    }
     const columns : ColumnType<NotificationItem>[] = [
         {
             title: 'Date',
@@ -137,8 +148,11 @@ const HomePage: FC = () => {
                                     value={stores}
                                 />
                             </div>}
+                            { mode === 'custom' && <div className='card-actions' style={{width: '350px'}}>
+                                <MyDatePicker.RangePicker style={{width: '300px'}} onChange={handleChangeDateRange} value={[currentRange[0], currentRange[1]]} />
+                            </div>}
                         </div>
-                        <SalesChart onTabChange={handleTabChange}/>
+                        <SalesChart onTabChange={handleTabChange} dateRange={dateRange}/>
                     </Card>
                 </Col>
             </Row>

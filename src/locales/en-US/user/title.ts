@@ -19,6 +19,8 @@ export const enUS_title = {
   'title.funding_report': 'Instacredits - Funding Reports',
   'title.terminal': 'Instacredits - Terminals',
   'title.merchant_account': 'Instacredits - Merchant Accounts',
-  'title.agent': 'Agents',
-  'title.commission': 'Commissions',
+  'title.agent': 'Instacredits - Agents',
+  'title.commission': 'Instacredits - Commissions',
+  'title.report': 'Instacredits - Reports',
+  'title.not_processed_report': 'Instacredits - Not Processed Yet',
 };

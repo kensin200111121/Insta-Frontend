@@ -14,17 +14,17 @@ export type TerminalFormData = {
     model: string,
     token: string,
     description: string,
+    merchant: string
 }
 
 const TerminalForm: React.FC<DialogContentProps<any, TerminalFormData>> = ({ data, onClose }) => {
     const [form] = Form.useForm();
     const { locations } = useSelector(state => state.location);
+    const { merchant_accounts } = useSelector(state => state.merchantaccount);
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if( !locations || locations.length == 0 ){
-            dispatch(GetLocationsAsync());
-        }
+        dispatch(GetLocationsAsync());
     }, []);
 
     useEffect(() => {
@@ -97,6 +97,13 @@ const TerminalForm: React.FC<DialogContentProps<any, TerminalFormData>> = ({ dat
                     rules={[{ required: true, message: 'Token is required!' }]}
                 >
                     <MyInput placeholder='Enter Token' />
+                </Form.Item>
+                <Form.Item name="merchant" rules={[{ required: true, message: 'MID is required!' }]}>
+                    <MySelect
+                        placeholder="Select Merchant Account"
+                        className='w-full'
+                        options={merchant_accounts.map(d => ({label: d.iso_name, value: d._id}))}
+                    />
                 </Form.Item>
                 <Form.Item
                 name="description"

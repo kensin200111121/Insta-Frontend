@@ -88,7 +88,7 @@ const ReportForm: React.FC<DialogContentProps<LocationItem[], ReportFormData>> =
             const jsonData: FundingReportRow[] = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
     
             const requiredColumns = ['Store Name', 'Store ID', 'Amount Funded', 'Funding Date', 'Status', 'Notes'];
-            const headers = jsonData[0] as (string | number | null)[];
+            const headers = (jsonData[0] as (string | number | null)[]).map((e) => (typeof e == 'string' ? e?.trim() : e));
             const isValid = requiredColumns.every(col => headers.includes(col));
     
             if (!isValid) {
@@ -113,6 +113,7 @@ const ReportForm: React.FC<DialogContentProps<LocationItem[], ReportFormData>> =
                     notes: row[5],
                 };
             });
+            console.log('fundingReports', fundingReports);
             const formData = new FormData();
             formData.append('report', file as any);
             formData.append('reports', JSON.stringify(fundingReports));

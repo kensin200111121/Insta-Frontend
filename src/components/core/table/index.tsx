@@ -33,7 +33,7 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
     .ant-spin-nested-loading,
     .ant-spin-container,
     .ant-table-container {
-      height: 100%;
+      height: calc(100vh - 190px);
     }
     .ant-spin-container {
       overflow: hidden;
@@ -88,7 +88,7 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
   const combinedPagination : TablePaginationConfig = typeof pagination === 'object' ? { ...defaultPagination, ...pagination } : {...defaultPagination};
 
   const [isShowAll, setIsShowAll] = useState(false);
-  const [lastCurrent, setLastCurrent] = useState(0);
+  const [lastCurrent, setLastCurrent] = useState(1);
   const [lastPageSize, setLastPageSize] = useState(25);
 
   useEffect(() => {
@@ -112,13 +112,13 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
     <div style={{ height }} css={styles}>
       <Table<T> {...rest} scroll={{ x: 'max-content', y: '100%' }} onChange={handleChange}
         pagination={isShowAll || !pagable ? false : combinedPagination} dataSource={dataSource}/>
-      { ShowAll && 
+      {/* { ShowAll && 
         <div className='text-right' style={{marginTop: isShowAll ? '10px' : '0px'}}>
           <MyButton className='btn-active' onClick={() => setIsShowAll(!isShowAll)}>
             {isShowAll ? 'ShowPaginated' : 'ShowAll'}
           </MyButton>
         </div>
-      }
+      } */}
     </div>
   );
 

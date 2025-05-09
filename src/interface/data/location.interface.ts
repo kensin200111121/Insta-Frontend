@@ -41,9 +41,11 @@ export interface LocationItem {
   percentageProcessingFeeAmount: number;
   fixedProcessingFeeMode: boolean;
   fixedProcessingFeeAmount: number;
+  timezone: string;
   userMembers: UserMembersInterface[];
   reportUsers: ReportUserInterface[];
   terminals: TerminalInterface[];
+  merchant: string[];
   mtd_volume?: string;
   avg_daily_volume?: string;
   avg_ticket?: number;
@@ -54,11 +56,7 @@ export interface LocationItem {
   discover?: string;
   amex?: string;
   of_terminals?: string;
-  merchant?: {
-    mid?: string;
-    descriptor?: string;  
-  }
-  notes?: string;
+  notes?: string;  
 }
 
 export interface EditLocationItem {
@@ -103,8 +101,10 @@ export interface EditLocationItem {
     percentageProcessingFeeAmount: string;
     fixedProcessingFeeMode: boolean;
     fixedProcessingFeeAmount: string;
-    merchant: string;
+    merchants: string[];
     enterprise: string;
+    live: boolean;
+    timezone: string;
     agents: {
       agent: string;
       commissionRatesAmount: string;
@@ -168,7 +168,7 @@ export interface LocationCreateFormItem {
   userMembers: UserMembersInterface[];
   reportUsers: ReportUserInterface[];
   terminals: TerminalInterface[];
-  merchant: string;
+  merchants: string[];
   agent: string;
   enterprise: string;
   secondAgent: string;
@@ -177,6 +177,8 @@ export interface LocationCreateFormItem {
   subAgent: string;
   subCommissionRatesAmount: string;
   subPerTransactionAmount: string;
+  live: boolean;
+  timezone: string;
 }
 
 export interface LocationListItem {
@@ -196,7 +198,6 @@ export interface LocationListItem {
   discover?: number;
   amex?: number;
   of_terminals?: number;
-  mid?: string;
   descriptor?: string;
   notes?: string;
   ownershipProof: {
