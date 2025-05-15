@@ -16,6 +16,10 @@ export interface NoteTerminal {
   noted_terminal: NoteFormData
 }
 
+export interface SetTerminalStatus {
+  setTerminal: TerminalItem;
+}
+
 export interface TerminalState {
   terminals: TerminalItem[];
 }
@@ -42,10 +46,16 @@ const terminalSlice = createSlice({
     noteTerminal(state, action: PayloadAction<NoteTerminal>) {
       const index = state.terminals.findIndex(terminal => terminal._id == action.payload.noted_terminal.id);
       state.terminals[index].note = action.payload.noted_terminal.notes;
+    },
+    setTerminalStatus(state, action: PayloadAction<SetTerminalStatus>) {
+      const index = state.terminals.findIndex(t => t._id == action.payload.setTerminal._id)
+      if(index >= 0){
+        state.terminals[index].status = action.payload.setTerminal.status;
+      }
     }
   },
 });
 
-export const { setTerminals, createTerminal, noteTerminal, updateTerminal } = terminalSlice.actions;
+export const { setTerminals, createTerminal, noteTerminal, updateTerminal, setTerminalStatus } = terminalSlice.actions;
 
 export default terminalSlice.reducer;

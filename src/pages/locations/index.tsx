@@ -335,7 +335,7 @@ const LocationPage: FC = () => {
       renderExport: (val: string) => val
     },
     {
-      title: '',
+      title: 'Terminals',
       export: false,
       render: (val:any, record:LocationListItem) => (<a onClick={() => onTerminalListOpen(record._id)}>See Terminals</a>)
     },
@@ -360,7 +360,7 @@ const LocationPage: FC = () => {
 
   return (
     <MyPage
-      title={`Locations: ${locationStatistics?.length ?? 0}`}
+      title={`Locations: ${getFormatedNumber(locationStatistics?.length ?? 0, 0)}`}
       header={
         <>
           <MyInput placeholder="Enter Store Name or Transaction ID"></MyInput>

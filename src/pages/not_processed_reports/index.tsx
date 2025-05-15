@@ -2,6 +2,7 @@ import type { FC } from 'react';
 
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,6 +17,7 @@ import { NotProcessedReportItem } from '@/interface/data/report.interface';
 const NotProcessedReportPage: FC = () => {
   const dispatch = useDispatch();
   const { not_processeds } = useSelector(state => state.notProcessed);
+  const { timezone } = useSelector(state => state.user);
   const [ filters, setFilters ] = useState<Record<string, any>>({});
   const [ dateRange, setDateRange ] = useState<string[]>([]);
 
@@ -28,7 +30,7 @@ const NotProcessedReportPage: FC = () => {
   }
     
   const handleSearch = () => {
-    setFilters({dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format())})
+    setFilters({dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format())})
   }
 
   useEffect(() => {

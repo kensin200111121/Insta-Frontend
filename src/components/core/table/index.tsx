@@ -25,6 +25,12 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
       }
     }
 
+    .ant-table-body {
+      table{
+        table-layout: auto !important;
+      }
+    }
+
     display: flex;
     flex-direction: column;
     overflow-x: auto;
@@ -33,7 +39,7 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
     .ant-spin-nested-loading,
     .ant-spin-container,
     .ant-table-container {
-      height: calc(100vh - 190px);
+      height: 100%;
     }
     .ant-spin-container {
       overflow: hidden;
@@ -52,6 +58,8 @@ const MyTable = <T extends object = object>(props: MyTableProps<T>) => {
           .ant-table-body {
             overflow: auto !important;
             flex: 1;
+            height: calc(100vh - 300px)!important;
+            max-height: calc(100vh - 300px)!important;
             table {
               height: 100%;
             }

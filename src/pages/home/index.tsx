@@ -25,7 +25,7 @@ const HomePage: FC = () => {
     const dispatch = useDispatch();
     const { notifications, statistics } = useSelector(state => state.homepage);
     const { locations } = useSelector(state => state.location);
-    const { role } = useSelector(state => state.user);
+    const { role, timezone } = useSelector(state => state.user);
     const [ stores, setStores ] = useState<string[]>(['all']);
     const [ mode, setMode ] = useState('');
     const [ dateRange, setDateRange ] = useState<string[]>([]);
@@ -61,8 +61,8 @@ const HomePage: FC = () => {
 
     useEffect(() => {
         if(mode != ''){
-            dispatch(GetSalesAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
-            dispatch(GetStatisticsAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone: moment.tz.guess()}));
+            dispatch(GetSalesAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone}));
+            dispatch(GetStatisticsAsync({mode, dateRange, stores: stores.includes('all') ? [] : stores, timezone}));
         }
     }, [stores, mode, dateRange]);
 
@@ -90,11 +90,11 @@ const HomePage: FC = () => {
     const columns : ColumnType<NotificationItem>[] = [
         {
             title: 'Date',
-            render: (val:any, record:NotificationItem) => (moment(record.created_at).format('MM/DD/YYYY'))
+            render: (val:any, record:NotificationItem) => (moment.tz(record.created_at, timezone).format('MM/DD/YYYY'))
         },
         {
             title: 'Time',
-            render: (val:any, record:NotificationItem) => (moment(record.created_at).format('hh:mm:ss A'))
+            render: (val:any, record:NotificationItem) => (moment.tz(record.created_at, timezone).format('hh:mm:ss A'))
         },
         {
             title: 'Title of Notification',

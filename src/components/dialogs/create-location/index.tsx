@@ -29,6 +29,7 @@ import { GetEnterprisesAsync } from '@/pages/enterprises/store/action';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 import getFormatedNumber, { roundDown } from '@/utils/getFormatedNumber';
 import moment from 'moment-timezone';
+import { TIMEZONE } from '@/constants/timezone';
 
 const hasPermission = (permission: Record<string, boolean>) => {
   let result = false;
@@ -1146,11 +1147,13 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
             <Col span={5}>
               <Form.Item name="secondAgent" rules={[{ required: hasAnotherAgent, message: 'Second agent name is required!' }]}>
                 <MySelect
+                  allowClear
                   className="select-normal w-full"
                   options={agents.map(d => ({label: d.agentInfo.agentCompanyName, value: d._id}))}
                   placeholder="Agent Name"
                   popupClassName="select-dropdown-normal"
                   onSelect={handleSecondAgentSelect}
+                  onClear={() => handleSecondAgentSelect('')}
                 />
               </Form.Item>
             </Col>
@@ -1184,11 +1187,13 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
             <Col span={5}>
               <Form.Item name="subAgent">
                 <MySelect
+                  allowClear
                   className="select-normal w-full"
                   options={agents.map(d => ({label: d.agentInfo.agentCompanyName, value: d._id}))}
                   placeholder="Agent Name"
                   popupClassName="select-dropdown-normal"
                   onSelect={handleSubAgentSelect}
+                  onClear={() => handleSubAgentSelect('')}
                 />
               </Form.Item>
             </Col>
@@ -1465,7 +1470,7 @@ const CreateLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, 
               <MySelect
                 className="w-full"
                 placeholder='Timezone'
-                options={moment.tz.names().map(d => ({label: d, value: d}))}
+                options={TIMEZONE}
               />
             </Form.Item>
           </Col>

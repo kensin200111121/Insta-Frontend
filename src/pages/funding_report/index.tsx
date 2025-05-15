@@ -8,7 +8,7 @@ import { GetFundingReportAsync, NoteFundingReportAsync } from './store/action';
 import { getPriceNumber } from '@/utils/getFormatedNumber';
 import { FundingReportItem } from '@/interface/data/fundingreport.interface';
 import moment from 'moment';
-import { SERVER } from '@/config/path';
+import 'moment-timezone';
 import ReportFormDialog, { ReportFormData } from '@/components/dialogs/fund-report';
 import NoteFormDialog, { NoteFormData } from '@/components/dialogs/note-form';
 import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-form/see-note';
@@ -20,6 +20,7 @@ import { fundingReportStatusList } from '@/patterns/selectOptions';
 const FundingReportPage: FC = () => {
 
     const dispatch = useDispatch();
+    const { timezone } = useSelector(state => state.user);
     const { funding_report } = useSelector(state => state.fundingreport);
     const { locations } = useSelector(state => state.location);
 
@@ -60,11 +61,11 @@ const FundingReportPage: FC = () => {
     const columns = [
         {
             title: 'Batch Date',
-            render: (_:any, record:FundingReportItem) => (moment(record.created_at).format('MM/DD/YYYY'))
+            render: (_:any, record:FundingReportItem) => (moment.tz(record.created_at, timezone).format('MM/DD/YYYY'))
         },
         {
             title: 'Time',
-            render: (_:any, record:FundingReportItem) => (moment(record.created_at).format('hh:mm:ss A'))
+            render: (_:any, record:FundingReportItem) => (moment.tz(record.created_at, timezone).format('hh:mm:ss A'))
         },
         {
             title: 'ACH ID',
@@ -94,7 +95,7 @@ const FundingReportPage: FC = () => {
             title: 'Funding Date',
             dataIndex: 'funded_at',
             key: 'funded_at',
-            render: (val:Date) => (<div style={{minWidth: '90px'}}>{moment(val).format('MM/DD/YYYY')}</div>)
+            render: (val:Date) => (<div style={{minWidth: '90px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>)
         },
         {
             title: 'Report Uploaded',

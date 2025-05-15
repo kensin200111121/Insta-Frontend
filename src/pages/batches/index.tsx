@@ -6,6 +6,7 @@ import MyTable from '@/components/core/table';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetBatchesAsync, SetBatchStatusAsync } from './store/action';
 import moment from 'moment';
+import 'moment-timezone';
 import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 import exportToExcel from '@/utils/exportToExcel';
 import { batchStatusColors, batchStatusOptions } from '@/patterns/selectOptions';
@@ -20,7 +21,7 @@ const BatchPage: FC = () => {
 
     const dispatch = useDispatch();
     const { batches, total } = useSelector(state => state.batch);
-    const { role } = useSelector(state => state.user);
+    const { role, timezone } = useSelector(state => state.user);
     const [pagination, setPagination] = useState<TablePaginationConfig>({});
     const [filters, setFilters] = useState<Record<string, any>>({});
     const [ dateRange, setDateRange ] = useState<string[]>([]);
@@ -57,7 +58,7 @@ const BatchPage: FC = () => {
     }
     
     const handleSearch = () => {
-        setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format()), searchKey})
+        setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format()), searchKey})
     }
 
     useEffect(() => {
@@ -71,15 +72,15 @@ const BatchPage: FC = () => {
             title: role === USER_ROLE.admin ? 'Batch Date' : 'Date',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-            renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+            renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
         },
         {
             title: 'Funding Date',
             dataIndex: 'funded_at',
             key: 'funded_at',
-            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-            renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+            render: (val:Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+            renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
         },
         ...(role === USER_ROLE.admin ? [
             {
@@ -154,7 +155,7 @@ const BatchPage: FC = () => {
               
     return (
         <MyPage
-            title={`Batches: ${total}`}
+            title={`Batches: ${getFormatedNumber(total, 0)}`}
             header={<>
                     <MyDatePicker.RangePicker style={{width: '300px'}} onChange={handleChangeDateRange} />
                     <MyInput placeholder="Enter Batch ID" onChange={e => setSearchKey(e.target.value)} />

@@ -15,6 +15,7 @@ const initialState: UserState = {
   menuList: [],
   username: localStorage.getItem('username') || '',
   role: parseInt(localStorage.getItem('role') || '') as Role,
+  timezone: 'America/New_York'
 };
 
 const userSlice = createSlice({

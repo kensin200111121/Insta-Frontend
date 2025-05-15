@@ -206,6 +206,22 @@ export const batchStatusOptions : SelectOption<number>[] = [
   }
 ];
 
+export const terminalStatusColors : Record<string, string> = {
+  '0': 'danger',
+  '1': 'success'
+};
+
+export const terminalStatusOptions : SelectOption<number>[] = [
+  {
+    value: 0,
+    label: 'Disabled'
+  },
+  {
+    value: 1,
+    label: 'LIVE'
+  }
+];
+
 export const allStoresItem = {
   label: 'All',
   value: 'all',
@@ -238,57 +254,58 @@ export const selectReportTypeOptions: SelectOption<string>[] = [
 ];
 
 export const selectStateOptions: SelectOption<string>[] = [
-  { label: 'State', value: '' },
-  { label: 'AL', value: 'Alabama' },
-  { label: 'AK', value: 'Alaska' },
-  { label: 'AZ', value: 'Arizona' },
-  { label: 'AR', value: 'Arkansas' },
-  { label: 'CA', value: 'California' },
-  { label: 'CO', value: 'Colorado' },
-  { label: 'CT', value: 'Connecticut' },
-  { label: 'DE', value: 'Delaware' },
-  { label: 'FL', value: 'Florida' },
-  { label: 'GA', value: 'Georgia' },
-  { label: 'HI', value: 'Hawaii' },
-  { label: 'ID', value: 'Idaho' },
-  { label: 'IL', value: 'Illinois' },
-  { label: 'IN', value: 'Indiana' },
-  { label: 'IA', value: 'Iowa' },
-  { label: 'KS', value: 'Kansas' },
-  { label: 'KY', value: 'Kentucky' },
-  { label: 'LA', value: 'Louisiana' },
-  { label: 'ME', value: 'Maine' },
-  { label: 'MD', value: 'Maryland' },
-  { label: 'MA', value: 'Massachusetts' },
-  { label: 'MI', value: 'Michigan' },
-  { label: 'MN', value: 'Minnesota' },
-  { label: 'MS', value: 'Mississippi' },
-  { label: 'MO', value: 'Missouri' },
-  { label: 'MT', value: 'Montana' },
-  { label: 'NE', value: 'Nebraska' },
-  { label: 'NV', value: 'Nevada' },
-  { label: 'NH', value: 'New Hampshire' },
-  { label: 'NJ', value: 'New Jersey' },
-  { label: 'NM', value: 'New Mexico' },
-  { label: 'NY', value: 'New York' },
-  { label: 'NC', value: 'North Carolina' },
-  { label: 'ND', value: 'North Dakota' },
-  { label: 'OH', value: 'Ohio' },
-  { label: 'OK', value: 'Oklahoma' },
-  { label: 'OR', value: 'Oregon' },
-  { label: 'PA', value: 'Pennsylvania' },
-  { label: 'RI', value: 'Rhode Island' },
-  { label: 'SC', value: 'South Carolina' },
-  { label: 'SD', value: 'South Dakota' },
-  { label: 'TN', value: 'Tennessee' },
-  { label: 'TX', value: 'Texas' },
-  { label: 'UT', value: 'Utah' },
-  { label: 'VT', value: 'Vermont' },
-  { label: 'VA', value: 'Virginia' },
-  { label: 'WA', value: 'Washington' },
-  { label: 'WV', value: 'West Virginia' },
-  { label: 'WI', value: 'Wisconsin' },
-  { label: 'WY', value: 'Wyoming' }
+    { value: "", label: "State" },
+    { value: "Alabama", label: "Alabama" },
+    { value: "Alaska", label: "Alaska" },
+    { value: "Arizona", label: "Arizona" },
+    { value: "Arkansas", label: "Arkansas" },
+    { value: "California", label: "California" },
+    { value: "Colorado", label: "Colorado" },
+    { value: "Connecticut", label: "Connecticut" },
+    { value: "Delaware", label: "Delaware" },
+    { value: "Florida", label: "Florida" },
+    { value: "Georgia", label: "Georgia" },
+    { value: "Hawaii", label: "Hawaii" },
+    { value: "Idaho", label: "Idaho" },
+    { value: "Illinois", label: "Illinois" },
+    { value: "Indiana", label: "Indiana" },
+    { value: "Iowa", label: "Iowa" },
+    { value: "Kansas", label: "Kansas" },
+    { value: "Kentucky", label: "Kentucky" },
+    { value: "Louisiana", label: "Louisiana" },
+    { value: "Maine", label: "Maine" },
+    { value: "Maryland", label: "Maryland" },
+    { value: "Massachusetts", label: "Massachusetts" },
+    { value: "Michigan", label: "Michigan" },
+    { value: "Minnesota", label: "Minnesota" },
+    { value: "Mississippi", label: "Mississippi" },
+    { value: "Missouri", label: "Missouri" },
+    { value: "Montana", label: "Montana" },
+    { value: "Nebraska", label: "Nebraska" },
+    { value: "Nevada", label: "Nevada" },
+    { value: "New Hampshire", label: "New Hampshire" },
+    { value: "New Jersey", label: "New Jersey" },
+    { value: "New Mexico", label: "New Mexico" },
+    { value: "New York", label: "New York" },
+    { value: "North Carolina", label: "North Carolina" },
+    { value: "North Dakota", label: "North Dakota" },
+    { value: "Ohio", label: "Ohio" },
+    { value: "Oklahoma", label: "Oklahoma" },
+    { value: "Oregon", label: "Oregon" },
+    { value: "Pennsylvania", label: "Pennsylvania" },
+    { value: "Rhode Island", label: "Rhode Island" },
+    { value: "South Carolina", label: "South Carolina" },
+    { value: "South Dakota", label: "South Dakota" },
+    { value: "Tennessee", label: "Tennessee" },
+    { value: "Texas", label: "Texas" },
+    { value: "Utah", label: "Utah" },
+    { value: "Vermont", label: "Vermont" },
+    { value: "Virginia", label: "Virginia" },
+    { value: "Washington", label: "Washington" },
+    { value: "Washington DC", label: "Washington DC" },
+    { value: "West Virginia", label: "West Virginia" },
+    { value: "Wisconsin", label: "Wisconsin" },
+    { value: "Wyoming", label: "Wyoming" }
 ];
 
 export const selectTerminalDescriptionOptions: SelectOption<string>[] = [

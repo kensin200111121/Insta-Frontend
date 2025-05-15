@@ -6,20 +6,7 @@ import { MyButton } from '@/components/basic';
 import { css } from '@emotion/react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
-
-const monthYear = moment().format('YYYY-MM');
-const lastMonthYear = moment().subtract(1, 'months').format('YYYY-MM');
-
-const salesData: string[][] = [
-  [ "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM" ],
-  [ "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM" ],
-  Array.from({ length: moment().date() }, (_, i) => 
-    moment(`${monthYear}-${i + 1}`, 'YYYY-MM-D').format('Do')),
-  [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ],
-  Array.from({ length: moment().subtract(1, 'months').daysInMonth() }, (_, i) => 
-    moment(`${lastMonthYear}-${i + 1}`, 'YYYY-MM-D').format('Do')),
-  ['date']
-];
+import 'moment-timezone';
 
 type SalesTooltipProps = {
   value: number|undefined;
@@ -49,6 +36,16 @@ type SalesChartProps = {
 };
 
 const SalesChart: FC<SalesChartProps> = ({ onTabChange, dateRange }) => {
+  const { timezone } = useSelector(state => state.user);
+
+  const [ salesData, setSalesData ] = useState<string[][]>([
+    [ "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM" ],
+    [ "12 AM", "1 AM", "2 AM", "3 AM", "4 AM", "5 AM", "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM", "11 PM" ],
+    ['date'],
+    [ "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" ],
+    ['date'],
+    ['date']
+  ]);
 
   const [total, setTotal] = useState(0);
   const [curTab, setCurTab] = useState(0);
@@ -74,9 +71,20 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange, dateRange }) => {
   }, []);
 
   useEffect(() => {
+    const temp = [...salesData];
+
+    const monthYear = moment().tz(timezone).format('YYYY-MM');
+    const lastMonthYear = moment().tz(timezone).subtract(1, 'months').format('YYYY-MM');
+    
+    temp[2] = Array.from({ length: moment().tz(timezone).date() }, (_, i) => 
+      moment(`${monthYear}-${i + 1}`, 'YYYY-MM-D').tz(timezone).format('Do'));
+    
+    temp[4] = Array.from({ length: moment().tz(timezone).subtract(1, 'months').daysInMonth() }, (_, i) => 
+      moment(`${lastMonthYear}-${i + 1}`, 'YYYY-MM-D').tz(timezone).format('Do'));
+
     if(dateRange.length){
-      const start = moment(dateRange[0], 'YYYY-MM-DD');
-      const end = moment(dateRange[1], 'YYYY-MM-DD');
+      const start = moment.tz(dateRange[0], 'YYYY-MM-DD', timezone);
+      const end = moment.tz(dateRange[1], 'YYYY-MM-DD', timezone);
       const dates = [];
     
       let current = start.clone();
@@ -84,11 +92,13 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange, dateRange }) => {
         dates.push(current.format('YYYY-MM-DD'));
         current.add(1, 'day');
       }
-      salesData[5] = dates;
+      temp[5] = dates;
     }else{
-      salesData[5] = ['date'];
+      temp[5] = ['date'];
     }
-  }, [dateRange])
+
+    setSalesData(temp);
+  }, [dateRange, timezone])
   
   useEffect(() => {
     const temp = salesData[curTab].map(label => ({ name: label, sales: 0}))
@@ -101,7 +111,7 @@ const SalesChart: FC<SalesChartProps> = ({ onTabChange, dateRange }) => {
     }
     setData(temp);
     setTotal(sum);
-  }, [ sales ]);
+  }, [ sales, salesData ]);
 
   return (
     <>

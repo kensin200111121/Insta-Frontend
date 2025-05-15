@@ -14,11 +14,13 @@ export const loginAsync = createAsyncAction<LoginParams, boolean>(payload => {
       localStorage.setItem('t', result.token);
       localStorage.setItem('username', result.username);
       localStorage.setItem('role', result.role + '');
+      localStorage.setItem('timezone', result.timezone + '');
       dispatch(
         setUserItem({
           logged: true,
           username: result.username,
-          role: result.role
+          role: result.role,
+          timezone: result.timezone
         }),
       );
 

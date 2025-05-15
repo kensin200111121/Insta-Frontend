@@ -14,6 +14,7 @@ import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-fo
 import { DialogMethod } from '@/types/props/dialog.type';
 import StatusCell from '../support_tickets/StatusCell';
 import moment from 'moment';
+import 'moment-timezone';
 import { getPriceNumber } from '@/utils/getFormatedNumber';
 import { TablePaginationConfig } from 'antd';
 import { apiGetCommissions } from '@/api/pages/commission.api';
@@ -22,7 +23,7 @@ import { USER_ROLE } from '@/interface/user/login';
 const CommissionPage: FC = () => {
 
     const dispatch = useDispatch();
-    const { role } = useSelector(state => state.user);
+    const { role, timezone } = useSelector(state => state.user);
     const { commissions, total } = useSelector(state => state.commission);
     const [ dateRange, setDateRange ] = useState<string[]>([]);
     const [ pagination, setPagination ] = useState<TablePaginationConfig>({});
@@ -57,8 +58,8 @@ const CommissionPage: FC = () => {
             title: 'Commission Period',
             dataIndex: 'createdAt',
             key: 'createdAt',
-            render: (val: Date, record: CommissionItem) => (<div style={{minWidth: '130px'}}>{`${moment.tz(val, moment.tz.guess()).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, moment.tz.guess()).format('MMM Do H') : ''}`}</div>),
-            renderExport: (val: Date, record: CommissionItem) => (`${moment.tz(val, moment.tz.guess()).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, moment.tz.guess()).format('MMM Do H') : ''}`)
+            render: (val: Date, record: CommissionItem) => (<div style={{minWidth: '130px'}}>{`${moment.tz(val, timezone).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, timezone).format('MMM Do H') : ''}`}</div>),
+            renderExport: (val: Date, record: CommissionItem) => (`${moment.tz(val, timezone).format('MMM Do H')} - ${record.endedAt ? moment.tz(record.endedAt, timezone).format('MMM Do H') : ''}`)
             // render: (val: Date) => (<div style={{minWidth: '100px'}}>{`${moment(val).startOf('isoWeek').format('MMM Do')} - ${moment(val).startOf('isoWeek').add(6, 'days').format('MMM Do')}`}</div>),
             // renderExport: (val: Date) => (`${moment(val).startOf('isoWeek').format('MMM Do')} - ${moment(val).startOf('isoWeek').add(6, 'days').format('MMM Do')}`)
         },
@@ -66,8 +67,8 @@ const CommissionPage: FC = () => {
             title: 'Funding Date',
             dataIndex: 'fundedAt',
             key: 'fundedAt',
-            render: (val: Date) => (<div style={{minWidth: '90px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-            renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY'),
+            render: (val: Date) => (<div style={{minWidth: '90px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+            renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY'),
         },
         {
             title: 'Gross Transaction Amount',

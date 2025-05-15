@@ -10,6 +10,7 @@ export interface TerminalItem {
     TPN: string;
     token: string,
     note: string;
+    status: number;
     store?: StoreInfo;
     user?: UserInfo;
 };
@@ -23,3 +24,8 @@ export interface TerminalUpdateRequest {
     token: string,
     description: string,
 };
+
+export interface SetTerminalStatusRequest{
+    _id: string,
+    status: number
+}

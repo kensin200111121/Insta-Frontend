@@ -6,6 +6,7 @@ import type { FC } from 'react';
 
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment-timezone';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -26,7 +27,7 @@ import { apiGetTransactions } from '@/api/pages/transaction.api';
 const TransactionPage: FC = () => {
   const dispatch = useDispatch();
   const { transactions, total } = useSelector(state => state.transaction);
-  const { role } = useSelector(state => state.user);
+  const { role, timezone } = useSelector(state => state.user);
   const { locations } = useSelector(state => state.location);
   const [ pagination, setPagination ] = useState<TablePaginationConfig>({});
   const [ filters, setFilters ] = useState<Record<string, any>>({});
@@ -84,11 +85,11 @@ const TransactionPage: FC = () => {
   const columns = [
     {
       title: 'Date',
-      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY'),
+      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, timezone).format('MM/DD/YYYY'),
     },
     {
       title: 'Time',
-      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, moment.tz.guess()).format('hh:mm:ss A'),
+      render: (val: any, record: TransactionItem) => moment.tz(record.created_at, timezone).format('hh:mm:ss A'),
     },
     ...(role === USER_ROLE.admin || role === USER_ROLE.agent ? [
       {
@@ -268,7 +269,7 @@ const TransactionPage: FC = () => {
   }
 
   const handleSearch = () => {
-    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format()), searchKey})
+    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format()), searchKey})
   }
 
   const handleFilterChange = (filter: string, val: number) => {
@@ -283,7 +284,7 @@ const TransactionPage: FC = () => {
   
   return (
     <MyPage
-      title={`Transactions: ${total}`}
+      title={`Transactions: ${getFormatedNumber(total, 0)}`}
       header={
         <>
           <MyDatePicker.RangePicker style={{width: '300px'}} onChange={handleChangeDateRange} />
@@ -323,18 +324,16 @@ const TransactionPage: FC = () => {
               onChange={val => handleFilterChange('status', val)}
             />
           }
-          {role >= USER_ROLE.admin && 
-            <div style={{width: '160px'}}>
-              <MySelect
-                className="select-secondary w-full"
-                options={transactionTypeSelectOptions}
-                placeholder="Sort by TYpe"
-                defaultValue={-1}
-                popupClassName="select-dropdown-secondary"
-                onChange={val => handleFilterChange('type', val)}
-              />
-            </div>
-          }
+          <div style={{width: '160px'}}>
+            <MySelect
+              className="select-secondary w-full"
+              options={transactionTypeSelectOptions}
+              placeholder="Sort by Type"
+              defaultValue={-1}
+              popupClassName="select-dropdown-secondary"
+              onChange={val => handleFilterChange('type', val)}
+            />
+          </div>
         </>
       }
       headerCollapsable

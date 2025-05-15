@@ -1,9 +1,9 @@
-import { apiGetTerminals, apiCreateTerminal, apiNoteTerminal, apiUpdateTerminal } from '@/api/pages/terminal.api';
-import { setTerminals, noteTerminal, createTerminal, updateTerminal } from './reducer';
+import { apiGetTerminals, apiCreateTerminal, apiNoteTerminal, apiUpdateTerminal, apiSetTerminalStatus } from '@/api/pages/terminal.api';
+import { setTerminals, noteTerminal, createTerminal, updateTerminal, setTerminalStatus } from './reducer';
 import { createAsyncAction } from '@/stores/utils';
 import { NoteFormData } from '@/components/dialogs/note-form';
 import { TerminalFormData } from '@/components/dialogs/terminal-form';
-import { TerminalUpdateRequest } from '@/interface/data/terminal.interface';
+import { SetTerminalStatusRequest, TerminalUpdateRequest } from '@/interface/data/terminal.interface';
 
 // typed wrapper async thunk function demo, no extra feature, just for powerful typings
 export const GetTerminalsAsync = createAsyncAction<void, boolean>(() => {
@@ -68,6 +68,24 @@ export const NoteTerminalAsync = createAsyncAction<NoteFormData, boolean>((data)
       dispatch(
         noteTerminal({
           noted_terminal: result
+        }),
+      );
+
+      return true;
+    }
+
+    return false;
+  };
+});
+
+export const SetTerminalStatusAsync = createAsyncAction<SetTerminalStatusRequest, boolean>(data => {
+  return async dispatch => {
+    const { result, status } = await apiSetTerminalStatus(data);
+
+    if (status) {
+      dispatch(
+        setTerminalStatus({
+          setTerminal: result,
         }),
       );
 

@@ -4,22 +4,26 @@ import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import { MyPage, MyButton, MyInput } from '@/components/basic';
 import MyTable from '@/components/core/table';
 import { useDispatch, useSelector } from 'react-redux';
-import { CreateTerminalAsync, GetTerminalsAsync, NoteTerminalAsync, UpdateTerminalAsync } from './store/action';
+import { CreateTerminalAsync, GetTerminalsAsync, NoteTerminalAsync, SetTerminalStatusAsync, UpdateTerminalAsync } from './store/action';
 import { TerminalItem } from '@/interface/data/terminal.interface';
 import { LocationItem } from '@/interface/data/location.interface';
-import { fundingReportStatusList } from '@/patterns/selectOptions';
+import { fundingReportStatusList, terminalStatusColors, terminalStatusOptions } from '@/patterns/selectOptions';
 import NoteFormDialog, { NoteFormData } from '@/components/dialogs/note-form';
 import TerminalFormDialog, { TerminalFormData } from '@/components/dialogs/terminal-form';
 import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-form/see-note';
 import { DialogMethod } from '@/types/props/dialog.type';
 import exportToExcel from '@/utils/exportToExcel';
 import moment from 'moment';
+import 'moment-timezone';
 import { GetMerchantAccountAsync } from '../merchant_accounts/store/action';
+import getFormatedNumber from '@/utils/getFormatedNumber';
+import StatusCell from '../support_tickets/StatusCell';
 
 const TerminalPage: FC = () => {
 
     const dispatch = useDispatch();
     const { terminals } = useSelector(state => state.terminal);
+    const { timezone } = useSelector(state => state.user);
     const [ selectedId, setSelectedId ] = useState('');
     const { merchant_accounts } = useSelector(state => state.merchantaccount);
 
@@ -75,7 +79,7 @@ const TerminalPage: FC = () => {
             title: 'Date Added',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (val: Date) => moment(val).format('MM/DD/YYYY'),
+            render: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY'),
         },
         {
             title: 'Location Name',
@@ -128,6 +132,23 @@ const TerminalPage: FC = () => {
             renderExport: (val: string) => val
         },
         {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            render: (val: number, record: TerminalItem) => (
+                <StatusCell<number>
+                    recordId={record._id || ''}
+                    status={val}
+                    minWidth={100}
+                    options={terminalStatusOptions}
+                    colors={terminalStatusColors}
+                    onChange={handleStatusChange}
+                    disabled={false}
+                />
+            ),
+            renderExport: (val: number) => terminalStatusOptions.find(d => d.value == val)?.label
+        },
+        {
             title: 'Notes',
             dataIndex: 'notes',
             key: 'notes',
@@ -140,9 +161,13 @@ const TerminalPage: FC = () => {
         exportToExcel(terminals, columns, 'Terminals');
     }
 
+    const handleStatusChange = (_id: string, status: number) => {
+        dispatch(SetTerminalStatusAsync({ _id, status }));
+    };
+
     return (
         <MyPage
-            title={`Terminals: ${terminals?.length ?? 0}`}
+            title={`Terminals: ${getFormatedNumber(terminals?.length ?? 0, 0)}`}
             header={<>
                     <MyInput placeholder="Enter Store Name or Transaction ID"></MyInput>
                     <button className='btn-search'><SearchOutlined/></button>

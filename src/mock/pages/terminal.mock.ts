@@ -12,6 +12,7 @@ const dataSource : TerminalItem[] = [
         TPN: '',
         token: '',
         note: '',
+	status: 1,
         store: {
             _id: `67ab86556a83c56893ec388b`,
             name: `Max Store`,

@@ -26,7 +26,7 @@ const RefundPage: FC = () => {
   const dispatch = useDispatch();
   const { refunds, total } = useSelector(state => state.refund);
   const { transactions } = useSelector(state => state.transaction);
-  const { role } = useSelector(state => state.user);
+  const { role, timezone } = useSelector(state => state.user);
   const [ pagination, setPagination ] = useState<TablePaginationConfig>({});
   const [ filters, setFilters ] = useState<Record<string, any>>({});
   const [ dateRange, setDateRange ] = useState<string[]>([]);
@@ -50,7 +50,7 @@ const RefundPage: FC = () => {
   }
     
   const handleSearch = () => {
-    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format()), searchKey})
+    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format()), searchKey})
   }
 
   useEffect(() => {
@@ -110,19 +110,19 @@ const RefundPage: FC = () => {
       title: 'Original Tx Date',
       dataIndex: 'created_at',
       key: 'created_at',
-      render: (val: Date) => (<div style={{minWidth: '110px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '110px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Refund Date',
       dataIndex: 'refunded_at',
       key: 'refunded_at',
-      render: (val: Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment.tz(val, moment.tz.guess()).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '80px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Time',
-      render: (val: any, record: RefundItem) => moment.tz(record.refunded_at, moment.tz.guess()).format('hh:mm:ss A'),
+      render: (val: any, record: RefundItem) => moment.tz(record.refunded_at, timezone).format('hh:mm:ss A'),
     },
     ...(role === USER_ROLE.admin ? [
       {
@@ -178,7 +178,7 @@ const RefundPage: FC = () => {
 
   return (
     <MyPage
-      title={`Refunds: ${total}`}
+      title={`Refunds: ${getFormatedNumber(total, 0)}`}
       header={
         <>
           <MyDatePicker.RangePicker style={{width: '300px'}} onChange={handleChangeDateRange} />

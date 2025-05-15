@@ -24,6 +24,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GetMerchantAccountAsync } from '@/pages/merchant_accounts/store/action';
 import getFormatedNumber, { roundDown } from '@/utils/getFormatedNumber';
 import moment from 'moment-timezone';
+import { TIMEZONE } from '@/constants/timezone';
 
 const EditLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, LocationCreateFormItem>> = ({
   data,
@@ -1067,10 +1068,12 @@ const EditLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, Lo
               <Form.Item name="secondAgent" rules={[{ required: hasAnotherAgent, message: 'Second agent name is required!' }]}>
                 <MySelect
                   className="select-normal w-full"
+                  allowClear
                   options={agents.map(d => ({label: d.agentInfo.agentCompanyName, value: d._id}))}
                   placeholder="Agent Name"
                   popupClassName="select-dropdown-normal"
                   onSelect={handleSecondAgentSelect}
+                  onClear={() => handleSecondAgentSelect('')}
                 />
               </Form.Item>
             </Col>
@@ -1103,10 +1106,12 @@ const EditLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, Lo
             <Form.Item name="subAgent">
               <MySelect
                 className="select-normal w-full"
+                allowClear
                 options={agents.map(d => ({label: d.agentInfo.agentCompanyName, value: d._id}))}
                 placeholder="Agent Name"
                 popupClassName="select-dropdown-normal"
                 onSelect={handleSubAgentSelect}
+                onClear={() => handleSubAgentSelect('')}
               />
             </Form.Item>
           </Col>
@@ -1380,7 +1385,7 @@ const EditLocationDialog: React.FC<DialogContentProps<LocationCreateFormItem, Lo
               <MySelect
                 className="w-full"
                 placeholder='Timezone'
-                options={moment.tz.names().map(d => ({label: d, value: d}))}
+                options={TIMEZONE}
               />
             </Form.Item>
           </Col>

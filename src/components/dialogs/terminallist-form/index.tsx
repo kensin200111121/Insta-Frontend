@@ -1,15 +1,16 @@
 import withDialog from '@/patterns/hoc/withDialog';
 import { DialogContentProps } from '@/types/props/dialog.type';
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { TerminalItem } from '@/interface/data/terminal.interface';
 import MyTable from '@/components/core/table';
 import { apiGetTerminals } from '@/api/pages/terminal.api';
 import moment from 'moment';
+import 'moment-timezone';
 
 const TerminalListForm: React.FC<DialogContentProps<string, any>> = ({ data, onClose }) => {
-    const dispatch = useDispatch();
     const [ terminals, setTerminals ] = useState<TerminalItem[]>([]);
+    const { timezone } = useSelector(state => state.user);
 
     useEffect(() => {
         apiGetTerminals(data)
@@ -26,7 +27,7 @@ const TerminalListForm: React.FC<DialogContentProps<string, any>> = ({ data, onC
             title: 'Date Added',
             dataIndex: 'created_at',
             key: 'created_at',
-            render: (val: Date) => moment(val).format('MM/DD/YYYY')
+            render: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
         },
         {
             title: 'Serial #',

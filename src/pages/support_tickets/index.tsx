@@ -6,6 +6,7 @@ import type { FC } from 'react';
 
 import { SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment-timezone';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,7 +17,7 @@ import NoteFormDialog, { NoteFormData } from '@/components/dialogs/note-form';
 import SeeNoteFormDialog, { SeeNoteFormData } from '@/components/dialogs/note-form/see-note';
 import SeeTransactionFormDialog from '@/components/dialogs/transaction-form/';
 import { supportTicketStatusColors, supportTicketStatusOptions } from '@/patterns/selectOptions';
-import { getPriceNumber } from '@/utils/getFormatedNumber';
+import getFormatedNumber, { getPriceNumber } from '@/utils/getFormatedNumber';
 
 import StatusCell from './StatusCell';
 import { CreateNewTicketAsync, GetSupportTicketsAsync, NoteTicketAsync, SetTicketStatusAsync } from './store/action';
@@ -27,7 +28,7 @@ const SupportTicketPage: FC = () => {
   const dispatch = useDispatch();
   const { supporttickets } = useSelector(state => state.supportticket);
   const { transactions } = useSelector(state => state.transaction);
-  const { role } = useSelector(state => state.user);
+  const { role, timezone } = useSelector(state => state.user);
 
   useEffect(() => {
     dispatch(GetSupportTicketsAsync());
@@ -64,7 +65,7 @@ const SupportTicketPage: FC = () => {
       title: 'Date of Transaction',
       dataIndex: 'date',
       key: 'date',
-      render: (val: any) => (<div style={{minWidth: '120px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
+      render: (val: any) => (<div style={{minWidth: '120px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
     },
     ...(role === USER_ROLE.admin ? [
       {
@@ -162,7 +163,7 @@ const SupportTicketPage: FC = () => {
 
   return (
     <MyPage
-      title={`Support Tickets (Solved: ${supporttickets.filter(t => t.status == 1).length} / Unsolved: ${supporttickets.filter(t => t.status == 0).length})`}
+      title={`Support Tickets (Solved: ${getFormatedNumber(supporttickets.filter(t => t.status == 1).length, 0)} / Unsolved: ${getFormatedNumber(supporttickets.filter(t => t.status == 0).length, 0)})`}
       header={
         <>
           <MyDatePicker.RangePicker style={{width: '300px'}} />

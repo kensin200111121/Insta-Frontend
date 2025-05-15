@@ -8,6 +8,7 @@ import type { FC } from 'react';
 
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment-timezone';
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -30,7 +31,7 @@ import { apiGetChargebacks } from '@/api/pages/chargeback.api';
 const ChargebackPage: FC = () => {
   const dispatch = useDispatch();
   const { chargebacks, total } = useSelector(state => state.chargeback);
-  const { role } = useSelector(state => state.user);
+  const { role, timezone } = useSelector(state => state.user);
   const [ pagination, setPagination ] = useState<TablePaginationConfig>({});
   const [ filters, setFilters ] = useState<Record<string, any>>({});
   const [ dateRange, setDateRange ] = useState<string[]>([]);
@@ -54,7 +55,7 @@ const ChargebackPage: FC = () => {
   }
     
   const handleSearch = () => {
-    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format()), searchKey})
+    setFilters({...filters, dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format()), searchKey})
   }
 
   useEffect(() => {
@@ -110,12 +111,12 @@ const ChargebackPage: FC = () => {
   const columns = [
     {
       title: 'Date of Original TX',
-      render: (val: any, record: ChargebackItem) => (<div style={{minWidth: '130px'}}>{moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: any, record: ChargebackItem) => moment.tz(record.created_at, moment.tz.guess()).format('MM/DD/YYYY')
+      render: (val: any, record: ChargebackItem) => (<div style={{minWidth: '130px'}}>{moment.tz(record.created_at, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: any, record: ChargebackItem) => moment.tz(record.created_at, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Time',
-      render: (val: any, record: ChargebackItem) => moment.tz(record.created_at, moment.tz.guess()).format('HH:MM:SS'),
+      render: (val: any, record: ChargebackItem) => moment.tz(record.created_at, timezone).format('HH:MM:SS'),
     },
     ...(role === USER_ROLE.admin ? [
       {
@@ -144,15 +145,15 @@ const ChargebackPage: FC = () => {
       title: 'Chargeback Date',
       dataIndex: 'charged_at',
       key: 'charged_at',
-      render: (val: Date) => (<div style={{minWidth: '120px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '120px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Last Response Date',
       dataIndex: 'respond_at',
       key: 'respond_at',
-      render: (val: Date) => (<div style={{minWidth: '130px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '130px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Transaction ID',
@@ -238,7 +239,7 @@ const ChargebackPage: FC = () => {
   
   return (
     <MyPage
-      title={`Chargebacks: ${total}`}
+      title={`Chargebacks: ${getFormatedNumber(total, 0)}`}
       header={
         <>
           <MyDatePicker.RangePicker style={{width: '300px'}} onChange={handleChangeDateRange} />

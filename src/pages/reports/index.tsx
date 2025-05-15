@@ -2,6 +2,7 @@ import type { FC } from 'react';
 
 import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import 'moment-timezone';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -15,6 +16,7 @@ import { GetReportsAsync } from './store/action';
 const ReportPage: FC = () => {
   const dispatch = useDispatch();
   const { reports } = useSelector(state => state.report);
+  const { timezone } = useSelector(state => state.user);
   const [ filters, setFilters ] = useState<Record<string, any>>({});
   const [ dateRange, setDateRange ] = useState<string[]>([]);
 
@@ -27,7 +29,7 @@ const ReportPage: FC = () => {
   }
     
   const handleSearch = () => {
-    setFilters({dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', moment.tz.guess()).format())})
+    setFilters({dateFilter: dateRange.map(date => moment.tz(date, 'YYYY-MM-DD', timezone).format())})
   }
 
   useEffect(() => {
@@ -43,8 +45,8 @@ const ReportPage: FC = () => {
       title: 'Date',
       dataIndex: 'date',
       key: 'date',
-      render: (val: Date) => (<div style={{minWidth: '130px'}}>{moment(val).format('MM/DD/YYYY')}</div>),
-      renderExport: (val: Date) => moment(val).format('MM/DD/YYYY')
+      render: (val: Date) => (<div style={{minWidth: '130px'}}>{moment.tz(val, timezone).format('MM/DD/YYYY')}</div>),
+      renderExport: (val: Date) => moment.tz(val, timezone).format('MM/DD/YYYY')
     },
     {
       title: 'Name',

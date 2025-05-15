@@ -22,6 +22,7 @@ export interface LoginResult {
   token: string;
   username: string;
   role: Role;
+  timezone: string;
 }
 
 export interface LogoutParams {
